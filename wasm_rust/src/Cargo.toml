@@ -1,0 +1,49 @@
+[workspace]
+members = [
+  "piano-layout",
+  "wgpu-jumpstart",
+  "mpeg_encoder",
+  "neothesia",
+  "neothesia-ai",
+  "neothesia-cli",
+  "neothesia-core",
+  "midi-file",
+  "midi-io",
+  "neothesia-iced-widgets",
+  "nuon",
+]
+
+default-members = ["neothesia"]
+resolver = "2"
+
+[workspace.dependencies]
+wgpu = "24"
+glyphon = { package = "cryoglyph", git = "https://github.com/iced-rs/cryoglyph.git", rev = "be2defe4a13fd7c97c6f4c81e8e085463eb578dc" }
+# glyphon = "0.5"
+log = "0.4"
+bytemuck = { version = "1.5", features = ["derive"] }
+env_logger = "0.11"
+futures = "0.3"
+euclid = "0.22"
+wgpu-jumpstart = { path = "./wgpu-jumpstart" }
+neothesia = { path = "./neothesia", default-features = false }
+neothesia-core = { path = "./neothesia-core" }
+neothesia-iced-widgets = { path = "./neothesia-iced-widgets" }
+
+midi-file = { path = "./midi-file" }
+midi-io = { path = "./midi-io" }
+piano-layout = { path = "./piano-layout" }
+nuon = { path = "./nuon" }
+
+profiling = "1.0"
+
+iced_graphics = { git = "https://github.com/iced-rs/iced.git", rev = "892ac1ce722a809e73aecd8d47ed4e7254d156df", features = ["image"]}
+iced_core = { git = "https://github.com/iced-rs/iced.git", rev = "892ac1ce722a809e73aecd8d47ed4e7254d156df" }
+iced_runtime = { git = "https://github.com/iced-rs/iced.git", rev = "892ac1ce722a809e73aecd8d47ed4e7254d156df" }
+iced_renderer = { git = "https://github.com/iced-rs/iced.git", rev = "892ac1ce722a809e73aecd8d47ed4e7254d156df" }
+iced_wgpu = { git = "https://github.com/iced-rs/iced.git", rev = "892ac1ce722a809e73aecd8d47ed4e7254d156df", features = [
+  "image",
+] }
+iced_widget = { git = "https://github.com/iced-rs/iced.git", rev = "892ac1ce722a809e73aecd8d47ed4e7254d156df", features = [
+  "image",
+] }
