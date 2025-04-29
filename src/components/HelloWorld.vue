@@ -18,12 +18,12 @@ const value1 = ref(true)
 
 <template>
   <h2 color="$ep-color-primary">
-    electron + Vite + Vue3 + element plus + Rust + wasm
+    Electron + Vite + Vue3 + Element-Plus + Rust + WASM
   </h2>
 
   <p>
     See
-    <a href="https://gitee.com/slamkuntech/wasmusicorelectron" target="_blank">WasMusicorElectron</a> for more
+    <a href="https://gitee.com/slamkuntech/wasmusicorelectron" target="_blank">WasMuscore</a> for more
     information.
   </p>
 

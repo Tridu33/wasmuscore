@@ -1,12 +1,12 @@
 {
-  "name": "WasMusicorElectron",
+  "name": "WasMuscore",
   "type": "module",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.8.1",
   "description": "一个融合electron + Vue3 + wasm的跨端桌面程序Music工具DAW集成",
   "author": {
-    "name": "WasMusicorElectron",
+    "name": "WasMuscore",
     "email": "tridu33@qq.com",
     "url": "",
     "com": ""
@@ -14,18 +14,27 @@
   "license": "MIT",
   "homepage": "",
   "repository": {
-    "url": "https://github.com/slamkun/WasMusicorElectron"
+    "url": "https://github.com/slamkun/WasMuscore"
   },
   "main": "electron.main.js",
-  "scripts注释": "如果electron安装失败缺少path.txt文件就npm run postinstall. generate生成dist_web文件夹.preview前置generate, 读取dist_web文件夹开发server可用chrome预览.build生成dist文件夹.",
+  "scripts注释": [
+    "start开发模式, electron和vite同时运行",
+    "如果electron安装失败缺少path.txt文件就npm run postinstall",
+    "generate生成dist_web文件夹",
+    "preview前置需执行generate, 然后读取dist_web文件夹开发server可用chrome预览",
+    "typecheck类型检查",
+    "lint代码检查",
+    "build生成dist文件夹"
+  ],
   "scripts": {
     "start": "cross-env NODE_ENV=\"development\" && concurrently \"vite\" \"wait-on tcp:3000 && electron .\"",
     "postinstall": "node node_modules/electron/install.js",
     "build": "rm -rf ./dist_web && rm -rf ./dist && bash build.sh &&  vite build && electron-builder",
-    "preview": "vite preview",
+    "preview": "pnpm run generate && vite preview",
     "generate": "vite-ssg build",
     "lint": "eslint .",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit",
+    "clean": "rm -rf ./dist_web && rm -rf ./dist && rm -rf ./rust_generated"
   },
   "config": {
     "electron": {

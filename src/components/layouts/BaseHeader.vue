@@ -11,7 +11,7 @@ import { toggleDark } from '~/composables'
         <div class="text-xl">
           <img src="../../assets/logo.png" class="logo">
         </div>
-        <span>WasMusicorElectron!</span>
+        <span>WasMuscore!</span>
       </div>
     </el-menu-item>
     <el-sub-menu index="2">

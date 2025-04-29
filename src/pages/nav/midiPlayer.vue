@@ -1,5 +1,6 @@
 <template>
   <div>
-    Navigation 4
+    MIDI Player
+    <UploadMIDI />
   </div>
 </template>

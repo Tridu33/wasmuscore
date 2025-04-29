@@ -1,7 +1,7 @@
 {
   "appId": "xxx",
-  "productName": "WasMusicorElectron!",
-  "copyright": "Copyright © 2024 WasMusicorElectron Inc.",
+  "productName": "WasMuscore!",
+  "copyright": "Copyright © 2024 WasMuscore Inc.",
   "files": ["./electron.main.js", "./dist"],
   "extraFiles": [
     // 把指定的资源复制到程序根目录，即把server文件夹的内容复制到程序根目录

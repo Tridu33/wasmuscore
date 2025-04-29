@@ -73,12 +73,12 @@ function handleClose(key: string, keyPath: string[]) {
         Navigator Three
       </template>
     </el-menu-item>
-    <el-menu-item index="/nav/4">
+    <el-menu-item index="/nav/midiPlayer">
       <el-icon>
         <Setting />
       </el-icon>
       <template #title>
-        Navigator Four
+        MIDI Player
       </template>
     </el-menu-item>
   </el-menu>
