@@ -17,15 +17,21 @@
     "url": "https://github.com/slamkun/WasMusicorElectron"
   },
   "main": "electron.main.js",
+  "scripts注释": "如果electron安装失败缺少path.txt文件就npm run postinstall. generate生成dist_web文件夹.preview前置generate, 读取dist_web文件夹开发server可用chrome预览.build生成dist文件夹.",
   "scripts": {
-    "dev": "cross-env NODE_ENV=\"development\" && concurrently \"vite\" \"wait-on tcp:3000 && electron .\"",
-    "build": "rm -rf ./dist_web && rm -rf ./dist && vite build && electron-builder",
+    "start": "cross-env NODE_ENV=\"development\" && concurrently \"vite\" \"wait-on tcp:3000 && electron .\"",
+    "postinstall": "node node_modules/electron/install.js",
+    "build": "rm -rf ./dist_web && rm -rf ./dist && bash build.sh &&  vite build && electron-builder",
     "preview": "vite preview",
     "generate": "vite-ssg build",
     "lint": "eslint .",
     "typecheck": "vue-tsc --noEmit"
   },
-  "scripts注释": "generate生成dist_web文件夹.preview前置generate, 读取dist_web文件夹开发server可用chrome预览.build生成dist文件夹.",
+  "config": {
+    "electron": {
+      "mirror": "https://registry.npmmirror.com/-/binary/electron/"
+    }
+  },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
     "@vueuse/core": "^12.0.0",
