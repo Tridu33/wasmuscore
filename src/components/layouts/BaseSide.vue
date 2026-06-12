@@ -56,5 +56,10 @@ function handleClose(key: string, keyPath: string[]) {
       <el-icon><Cpu /></el-icon>
       <template #title>noteDigger</template>
     </el-menu-item>
+
+    <el-menu-item index="/smoosic">
+      <el-icon><Monitor /></el-icon>
+      <template #title>Smoosic</template>
+    </el-menu-item>
   </el-menu>
 </template>
