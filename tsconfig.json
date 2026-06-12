@@ -6,6 +6,7 @@
     "useDefineForClassFields": true,
     "baseUrl": ".",
     "module": "esnext",
+    // "moduleResolution": "node",
     "moduleResolution": "bundler",
     "paths": {
       "~/*": ["src/*"]
@@ -23,5 +24,6 @@
   "vueCompilerOptions": {
     "target": 3
   },
+  "references": [{ "path": "./tsconfig.node.json" }],
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

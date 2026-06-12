@@ -19,8 +19,15 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
+    '/audio-test': RouteRecordInfo<'/audio-test', '/audio-test', Record<never, never>, Record<never, never>>,
+    '/editor-tab-test': RouteRecordInfo<'/editor-tab-test', '/editor-tab-test', Record<never, never>, Record<never, never>>,
+    '/musicxml-test': RouteRecordInfo<'/musicxml-test', '/musicxml-test', Record<never, never>, Record<never, never>>,
     '/nav/1/item-1': RouteRecordInfo<'/nav/1/item-1', '/nav/1/item-1', Record<never, never>, Record<never, never>>,
     '/nav/2': RouteRecordInfo<'/nav/2', '/nav/2', Record<never, never>, Record<never, never>>,
     '/nav/midiPlayer': RouteRecordInfo<'/nav/midiPlayer', '/nav/midiPlayer', Record<never, never>, Record<never, never>>,
+    '/notation-test': RouteRecordInfo<'/notation-test', '/notation-test', Record<never, never>, Record<never, never>>,
+    '/recording-test': RouteRecordInfo<'/recording-test', '/recording-test', Record<never, never>, Record<never, never>>,
+    '/wasm-test': RouteRecordInfo<'/wasm-test', '/wasm-test', Record<never, never>, Record<never, never>>,
+    '/webgpu-test': RouteRecordInfo<'/webgpu-test', '/webgpu-test', Record<never, never>, Record<never, never>>,
   }
 }
