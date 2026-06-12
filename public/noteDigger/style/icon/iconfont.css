@@ -1,0 +1,87 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4420000 */
+  src: url('iconfont.woff2?t=1774196575181') format('woff2'),
+       url('iconfont.woff?t=1774196575181') format('woff'),
+       url('iconfont.ttf?t=1774196575181') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-xifu:before {
+  content: "\e614";
+}
+
+.icon-xifu1:before {
+  content: "\e730";
+}
+
+.icon-lock:before {
+  content: "\e76f";
+}
+
+.icon-unlock:before {
+  content: "\e879";
+}
+
+.icon-file:before {
+  content: "\e63d";
+}
+
+.icon-analysis:before {
+  content: "\e600";
+}
+
+.icon-pageTurns:before {
+  content: "\e6d5";
+}
+
+.icon-repeat:before {
+  content: "\e628";
+}
+
+.icon-mixer:before {
+  content: "\e660";
+}
+
+.icon-setting:before {
+  content: "\e673";
+}
+
+.icon-list:before {
+  content: "\e603";
+}
+
+.icon-pen-l:before {
+  content: "\e64d";
+}
+
+.icon-select:before {
+  content: "\ea60";
+}
+
+.icon-range:before {
+  content: "\e63c";
+}
+
+.icon-eyeslash-fill:before {
+  content: "\e7aa";
+}
+
+.icon-eye-fill:before {
+  content: "\e7ab";
+}
+
+.icon-close_volume:before {
+  content: "\e6a0";
+}
+
+.icon-volume:before {
+  content: "\e6a3";
+}
+

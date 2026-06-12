@@ -1,0 +1,385 @@
+:root {
+    --theme-light: #2e3039;
+    --theme-middle: #25262d;
+    --theme-dark: #1e1f24;
+    --theme-text: #8e95a6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+html,
+body {
+    height: 100%;
+    font-size: 16px;
+    color: var(--theme-text);
+    background-color: var(--theme-dark);
+    overflow: hidden;
+}
+
+@media (max-width: 1084px) {
+    .logo3 {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1036px) {
+    .logo2 {
+        display: none !important;
+    }
+}
+
+@media (max-width: 983px) {
+    .logo1 {
+        display: none !important;
+    }
+    .tools {
+        justify-content: space-around !important;
+    }
+}
+
+@media (max-width: 792px) {
+    .rangeBox:has(#speedControl) {
+        display: none;
+    }
+}
+
+canvas {
+    display: block;
+    margin: 0;
+    border: none;
+}
+
+ul {
+    list-style: none;
+}
+
+button {
+    background-color: var(--theme-dark);
+    border: none;
+    cursor: pointer;
+    color: var(--theme-text);
+    font-size: 16px;
+}
+
+/* flex */
+.f {
+    display: flex;
+}
+
+.fc {
+    display: flex;
+    flex-direction: column;
+}
+
+.fr {
+    display: flex;
+    flex-direction: row;
+}
+
+/* width full */
+.wf {
+    width: 100%;
+}
+
+.dragIn::before {
+    content: "Drag and drop your file here";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    z-index: 98;
+    width: 100%;
+    height: 100%;
+    background-color: #1e1f24bb;
+    border: var(--theme-text) 3px dashed;
+    box-sizing: border-box;
+    font-size: 2em;
+}
+
+.card {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+.hvCenter {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#scrollbar-track {
+    margin: 0;
+    padding: 0;
+    border: none;
+    position: relative;
+    height: 1em;
+    background-color: rgb(37, 38, 45);
+}
+
+#scrollbar-thumb {
+    margin: 0;
+    padding: 0;
+    border: none;
+    position: absolute;
+    height: 100%;
+    width: 50px;
+    background-color: rgb(69, 72, 81);
+    cursor: ew-resize;
+}
+
+#play-btn {
+    background-color: var(--theme-middle);
+    color: var(--theme-text);
+    border: none;
+    border-right: var(--theme-dark) solid 3px;
+    position: relative;
+    font-size: 0.8em;
+    cursor: pointer;
+}
+
+.flexfull {
+    flex: 1;
+    /* 下面这行必须加 不然被画布撑开了就缩不回去了 */
+    overflow: hidden;
+}
+
+#main-layers {
+    position: relative;
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}
+
+.tools {
+    background-color: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px;
+    position: relative;
+    z-index: 1;
+}
+
+.top-logo {
+    height: 36px;
+    padding: 0 8px;
+    cursor: pointer;
+}
+
+/* 可以套在外面的盒子，盒子中可以放属性名 */
+.rangeBox {
+    height: 1em;
+    line-height: 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    margin: 0.25em;
+}
+
+/* 工具选择 */
+.switch-bar {
+    display: inline-block;
+    background-color: transparent;
+    /* 消除因为换行和缩进带来的间隔 */
+    white-space: nowrap;
+    font-size: 0;
+}
+
+.switch-bar button {
+    color: white;
+    padding: 0.5em 0.6em;
+    border-radius: 0;
+    background: rgb(50, 53, 62);
+    position: relative;
+    z-index: 0;
+    /* 恢复默认大小 */
+    font-size: 16px;
+}
+
+.switch-bar button:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.switch-bar button:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.switch-bar .selected {
+    background-color: rgb(60, 87, 221);
+}
+/* 下方标签 */
+.labeled {
+    position: relative;
+}
+.labeled::after {
+    content: attr(data-tooltip);
+    font-size: 12px;
+    color: var(--theme-text);
+    background-color: var(--theme-light);
+    white-space: pre;
+    padding: 4px 8px;
+    position: absolute;
+    z-index: 2;
+    bottom: 0;
+    left: 50%;
+    transform: translateY(105%) translateX(-50%);
+    border-radius: 4px;
+    border: var(--theme-dark) solid 2px;
+    display: none;
+}
+.labeled:hover::after {
+    display: block;
+}
+
+/* 用列表组织的菜单 */
+.btn-ul li {
+    margin: 0 -0.3em;
+    padding: 0.6em;
+    border-radius: 4px;
+}
+.btn-ul li:hover {
+    background-color: var(--theme-light) !important;
+    color: white !important;
+}
+.btn-ul button {
+    padding: 0.25em 0.6em;
+    margin-bottom: 0.3em;
+    border-radius: 6px;
+    border: black solid 2px;
+}
+.btn-ul button:hover {
+    color: white;
+}
+.btn-ul button:active {
+    background-color: black;
+}
+textarea {
+    width: calc(100% - 0.5em);
+    height: 100%;
+    padding: 0.3em;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--theme-dark);
+    color: var(--theme-text);
+    resize: vertical;
+}
+
+/* EQ控制面板 */
+#EQcontrol {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1em;
+}
+#EQcontrol h5 { /* 频率值 */
+    margin: 0.4em 0 0 0;
+    padding: 0;
+}
+#EQcontrol .myrange {
+    width: 100%;
+    margin: 0 0 0.3em 0;
+}
+#EQcontrol input {
+    width: 100%;
+}
+
+/* 漂亮的滑动条 */
+.niceScroll {
+    overflow: auto;
+}
+.niceScroll::-webkit-scrollbar {
+    width: 12px;
+}
+.niceScroll::-webkit-scrollbar-thumb {
+    background-color: rgb(50, 53, 62);
+    border: 3px solid rgb(37, 38, 45);
+    border-radius: 6px;
+}
+.niceScroll::-webkit-scrollbar-track, ::-webkit-scrollbar-corner {
+    background-color: rgb(37, 38, 45);
+}
+
+/* 分析面板 */
+.tonalityResult {
+    width: 100%;
+    border-left: white 1px solid;
+}
+
+.tonalityResult div {
+    color: var(--theme-dark);
+    height: 1em;
+    font-size: 1em;
+    line-height: 1em;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+/* 设置面板 */
+#settingPannel button {
+    margin: 0;
+}
+#settingPannel li {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+}
+#settingPannel li::after {
+    content: attr(data-value);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 10px;
+}
+#settingPannel li button:first-of-type {
+    font-family: monospace;
+    margin-right: 0.2em;
+}
+#settingPannel li button:last-of-type {
+    font-family: monospace;
+    margin-left: 0.2em;
+}
+#repeatRange {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0.4em 0;
+}
+#repeatRange input[type="text"] {
+    width: 46%;
+    border-radius: 4px;
+    padding-left: 4px;
+    border: none;
+    border: black solid 1px;
+    font-size: 0.9em;
+    color: var(--theme-text);
+    background: var(--theme-dark);
+}
+#repeatRange input[type="text"]:focus {
+    color: white;
+}
+
+canvas.selecting {
+    cursor: ew-resize;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.dim-text {
+    color: var(--theme-text) !important;
+}

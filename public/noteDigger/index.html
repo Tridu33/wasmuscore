@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="noteDigger是一个前端辅助扒谱工具，提供可视化的频谱助力零门槛快速扒谱，工具链完善，实现了“AI扒谱-人工修正-导出”的扒谱全流程。支持自动节奏分析、和弦分析、谐波分析。本项目即开即用、完全开源免费！" />
+    <meta name="msvalidate.01" content="675258B9620330F89A324C974E5FF134" />
+    <meta name="google-site-verification" content="EDvkTTOlpIs5kaPG6IxVzZxL-XkfjLrvChCOk6VKgHs" />
+    <link rel="Shortcut Icon" href="./favicon.ico" type="image/x-icon" />
+    <title>noteDigger~在线扒谱</title>
+
+    <!-- 导出需要，可以慢点加载 -->
+    <script src="./lib/midi.js" async></script>
+    <!-- 可选的CQT分析 -->
+    <script src="./dataProcess/CQT/cqt.js" async></script>
+    <!-- 可选的AI扒谱 -->
+    <script src="./dataProcess/AI/AIEntrance.js" async></script>
+    <!-- 节奏估计 -->
+    <script src="./dataProcess/bpmEst.js" async></script>
+    <!-- 自动音符对齐 -->
+    <script src="./dataProcess/ANA.js" async></script>
+    <!-- 非负最小二乘 -->
+    <script src="./dataProcess/NNLS.js" async></script>
+
+    <script src="./ui/siderMenu.js"></script>
+    <script src="./ui/myRange.js"></script>
+    <script src="./ui/contextMenu.js"></script>
+    <script src="./ui/channelDiv.js"></script>
+    <script src="./dataProcess/fft_real.js"></script>
+    <script src="./dataProcess/stftGPU.js"></script>
+    <script src="./dataProcess/analyser.js"></script>
+    <script src="./lib/snapshot.js"></script>
+    <script src="./lib/tinySynth.js"></script>
+    <script src="./lib/beatBar.js"></script>
+    <script src="./lib/saver.js"></script>
+    <script src="./lib/fakeAudio.js"></script>
+    <script src="./core/app_spectrogram.js"></script>
+    <script src="./core/app_midiaction.js"></script>
+    <script src="./core/app_midiplayer.js"></script>
+    <script src="./core/app_audioplayer.js"></script>
+    <script src="./core/app_keyboard.js"></script>
+    <script src="./core/app_timebar.js"></script>
+    <script src="./core/app_beatbar.js"></script>
+    <script src="./core/app_hscrollbar.js"></script>
+    <script src="./core/app_analyser.js"></script>
+    <script src="./core/app_io.js"></script>
+    <script src="./app.js"></script>
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/askUI.css">
+    <link rel="stylesheet" href="./style/myRange.css">
+    <link rel="stylesheet" href="./style/siderMenu.css">
+    <link rel="stylesheet" href="./style/contextMenu.css">
+    <link rel="stylesheet" href="./style/channelDiv.css">
+    <link rel="stylesheet" href="./style/icon/iconfont.css">
+
+    <!-- 插件 -->
+    <script src="./plugins/pitchName.js" async></script>
+    <script src="./plugins/chordEst.js" async></script>
+</head>
+
+<body class="fc">
+    <!-- 上半部分 工具区 -->
+    <div class="tools">
+        <img src="./img/logo-small.png" alt="noteDigger" class="top-logo logo1">
+        <div class="rangeBox">
+            速度&nbsp;<input type="range" id="speedControl" max="2" min="0.2" step="0.1" value="1">
+        </div>
+        <div>
+            <div class="rangeBox">
+                <b>显</b>&nbsp;&nbsp;倍率&nbsp;<input type="range" id="multiControl" max="600" min="10" step="2"
+                    value="240">
+            </div>
+            <div class="rangeBox">
+                <b>示</b>&nbsp;&nbsp;对比&nbsp;<input type="range" id="contrastControl" max="4" min="0.2" step="0.1"
+                    value="1">
+            </div>
+        </div>
+        <div>
+            <div class="rangeBox">
+                <b>音</b>&nbsp;&nbsp;音符&nbsp;<input type="range" id="midivolumeControl" max="1.5" min="0" step="0.02"
+                    value="1">
+            </div>
+            <div class="rangeBox">
+                <b>量</b>&nbsp;&nbsp;音频&nbsp;<input type="range" id="audiovolumeControl" max="1" min="0" step="0.02"
+                    value="0.2">
+            </div>
+        </div>
+
+        <div class="switch-bar" id="actMode">
+            <button class="iconfont icon-pen-l labeled selected" data-tooltip="绘制音符"></button>
+            <button class="labeled" data-tooltip="选择模式"><!-- 要旋转，所以包裹了一层 -->
+                <div class="iconfont icon-select"></div>
+            </button>
+        </div>
+        <div class="switch-bar">
+            <button class="iconfont icon-xifu1 labeled selected" id="snap-btn" data-tooltip="网格吸附"></button>
+        </div>
+        <div class="switch-bar">
+            <button class="iconfont icon-repeat labeled selected" id="repeat-btn" data-tooltip="重复区间:开"></button>
+        </div>
+        <div class="switch-bar">
+            <button class="iconfont icon-pageTurns labeled" id="autopage-btn" data-tooltip="自动翻页:关"></button>
+        </div>
+        <a href="https://www.bilibili.com/video/BV1XA4m1G7k4" class="f logo3" target="_blank">
+            <img src="./img/bilibili-white.png" alt="视频教程" class="top-logo">
+        </a>
+        <a href="https://github.com/madderscientist/noteDigger" class="f logo2" target="_blank">
+            <img src="./img/github-mark-white.png" alt="项目地址" class="top-logo">
+        </a>
+    </div>
+    <!-- 下半部分 操作区 -->
+    <div class="flexfull fr">
+        <!-- 菜单由函数创建 包括样式管理 -->
+        <div id="funcTab"></div>
+        <div id="funcSider" style="position: relative; z-index: 0;"></div>
+
+        <div class="flexfull fc" style="position: relative; z-index: 0; border-left: var(--theme-dark) solid 3px;">
+            <div id="Canvases-Container" class="flexfull">
+                <div class="f wf">
+                    <button id="play-btn" draggable="false">当前时间<br>总时长</button>
+                    <canvas id="timeBar" width="1000px" height="40px"></canvas>
+                </div>
+                <div class="f wf">
+                    <canvas id="piano" width="80px" height="500px"></canvas>
+                    <div id="main-layers" class="flexfull">
+                        <canvas id="spectrum" width="1000px" height="500px" style="z-index: 1;"></canvas>
+                        <canvas id="actions" width="1000px" height="500px" style="z-index: 2;"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div id="scrollbar-track">
+                <div id="scrollbar-thumb"></div>
+            </div>
+        </div>
+    </div>
+</body>
+<div id="tab-Contents">
+    <ul class="paddingbox niceScroll btn-ul" id="filePannel">
+        <li class="pointer">导入音频</li>
+        <li class="pointer">导入midi</li>
+        <li class="pointer">MIDI编辑器模式</li>
+        <li class="pointer">导出当前进度</li>
+        <li class="pointer">导出为midi</li>
+        <li id="numberedScore">
+            <button>转换为(更新)数字谱</button>
+            <textarea cols="30" rows="16"></textarea>
+        </li>
+    </ul>
+
+    <div class="paddingbox niceScroll">
+        <h3>EQ设置(dB)</h3>
+        <div id="EQcontrol">
+            请先上传音频！
+        </div>
+    </div>
+
+    <ul class="paddingbox niceScroll btn-ul" id="analysePannel">
+        <li class="pointer">调性分析</li>
+        <li>
+            <div style="cursor: pointer;">节奏分析</div>
+            自动节奏型 <input type="checkbox">
+        </li>
+        <li>自动填充 <h5 style="display: inline-block;"><input type="checkbox">在新轨道中</h5>
+            <div class="wf fr">
+                黑&nbsp;<input type="range" max="255" min="0" value="255" step="1">&nbsp;红
+            </div>
+            <div class="wf fr" style="justify-content: space-around;">
+                <button>重复区间内</button>
+                <button>所有时间</button>
+            </div>
+        </li>
+        <li class="pointer">去除谐波</li>
+        <li class="pointer">数字谱对齐音频</li>
+        <li class="pointer">人工智障扒谱</li>
+        <li class="pointer">音色分离扒谱</li>
+    </ul>
+
+    <ul class="paddingbox niceScroll btn-ul" id="settingPannel">
+        <li data-value="5"><button>-</button>宽度<button>+</button></li>
+        <li data-value="15"><button>-</button>高度<button>+</button></li>
+        <li data-value="170"><button>-</button>遮罩厚度<button>+</button></li>
+        <li data-value="20"><button>-</button>最短节拍宽<button>+</button></li>
+        <li data-value="1"><button>-</button>谐波数<button>+</button></li>
+        <li>
+            精准设置重复区间
+            <div id="repeatRange">
+                <input type="text" value="00:01:000">~<input type="text" value="00:02:000">
+            </div>
+            <button>取消区间</button><button>应用</button>
+        </li>
+        <li><label>透明度表示强度&nbsp;<input type="checkbox" checked
+                    onchange="app.MidiAction.alphaIntensity=this.checked"></label></li>
+        <li><label>播放节拍&nbsp;<input type="checkbox" onchange="app.MidiPlayer.switchBeatMode(this.checked)"></label></li>
+    </ul>
+</div>
+<script>
+    const menu = window.menu = SiderMenu.new(funcTab, funcSider, 206);
+    const app = window.app = new App();
+    const _checkBoxBlur = (e) => {
+        e.stopPropagation();
+        e.target.blur();
+    };
+    {   // 添加菜单内容
+        const tabContents = document.getElementById('tab-Contents').children;
+        menu.add('文件', 'iconfont icon-file', tabContents[0]);
+        menu.add('音轨', 'iconfont icon-list', app.MidiAction.channelDiv.container);
+        menu.add('EQ', 'iconfont icon-mixer', tabContents[0]);
+        menu.add('分析', 'iconfont icon-analysis', tabContents[0])
+        menu.add('设置', 'iconfont icon-setting', tabContents[0]);  // 内容是在变的
+        menu.show();
+        document.getElementById('tab-Contents').remove();
+    }
+    // 在后面初始化range; reset触发oninput事件同步app中的值
+    LableRange.new(speedControl).reset();
+    myRange.new(multiControl).reset();
+    myRange.new(contrastControl).reset();
+    hideLableRange.new(midivolumeControl).reset();
+    hideLableRange.new(audiovolumeControl).reset();
+    // 事件
+    // ==== 顶部按钮事件 ==== //
+    document.getElementById('snap-btn').addEventListener('click', function () {
+        switch (app.MidiAction.snapMode) {
+            case 1:
+                app.MidiAction.snapMode = -1;
+                this.dataset.tooltip = "节拍吸附";
+                this.className = "iconfont icon-xifu labeled selected";
+                break;
+            case -1:
+                app.MidiAction.snapMode = 0;
+                this.dataset.tooltip = "吸附:关";
+                this.className = "iconfont icon-xifu labeled";
+                break;
+            default:    // 吸附:关
+                app.MidiAction.snapMode = 1;
+                this.dataset.tooltip = "网格吸附";
+                this.className = "iconfont icon-xifu1 labeled selected";
+                break;
+        }
+        this.blur();
+    });
+    document.getElementById('repeat-btn').addEventListener('click', function () {
+        if (this.classList.toggle('selected')) {
+            app.AudioPlayer.repeat = true;
+            this.dataset.tooltip = '重复区间:开';
+        } else {
+            app.AudioPlayer.repeat = false;
+            this.dataset.tooltip = '重复区间:关';
+        }
+        this.blur();
+    });
+    document.getElementById('autopage-btn').addEventListener('click', function () {
+        if (this.classList.toggle('selected')) {
+            app.AudioPlayer.autoPage = true;
+            this.dataset.tooltip = '自动翻页:开';
+        } else {
+            app.AudioPlayer.autoPage = false;
+            this.dataset.tooltip = '自动翻页:关';
+        }
+        this.blur();
+    });
+    let actMode = document.getElementById('actMode').children;
+    actMode[0].onclick = () => {
+        app.MidiAction.mode = 0;
+        actMode[1].classList.remove('selected');
+        actMode[0].classList.add('selected');
+    };
+    actMode[1].onclick = () => {
+        if (app.MidiAction.mode == 0) app.MidiAction.mode = 1;
+        else {
+            app.MidiAction.frameXid = -1;
+            switch (app.MidiAction.frameMode) {
+                case 0:
+                    app.MidiAction.frameMode = 1;
+                    actMode[1].firstElementChild.className = 'iconfont icon-range';
+                    break;
+                case 1:
+                    app.MidiAction.frameMode = 2;
+                    actMode[1].firstElementChild.style.rotate = '90deg';
+                    break;
+                case 2:
+                    app.MidiAction.frameMode = 0;
+                    actMode[1].firstElementChild.style.rotate = '0deg';
+                    actMode[1].firstElementChild.className = 'iconfont icon-select';
+                    break;
+            }
+        }
+        actMode[0].classList.remove('selected');
+        actMode[1].classList.add('selected');
+    };
+
+    // EQ的UI设置
+    function iniEQUI({ detail }) {
+        if (detail >= 0) return;
+        if (app.midiMode) {
+            EQcontrol.innerHTML = '<h5>MIDI模式下没有EQ哦</h5>';
+            return;
+        }
+        EQcontrol.innerHTML = '';
+        const filters = app.AudioPlayer.audio.EQ.filter;
+        function controlfilter() {
+            this.filter.gain.value = parseInt(this.value);
+        }
+        for (const f of filters) {
+            const Hz = document.createElement('h5');
+            Hz.textContent = f.frequency.value + ' Hz';
+            EQcontrol.appendChild(Hz);
+            const r = document.createElement('input'); r.type = 'range';
+            r.max = 40; r.min = -40;
+            r.value = f.gain.value;
+            r.step = 1;
+            r.filter = f;
+            r.addEventListener('input', controlfilter);
+            EQcontrol.appendChild(r);
+            LableRange.new(r).reset();
+        }
+    } app.event.addEventListener('progress', iniEQUI);
+
+    // ==== 文件界面 ==== //
+    function _uploadFile() {
+        const input = document.createElement('input');
+        input.type = 'file';    // 音频和视频都可以，但是quicktime系列需要单独处理
+        input.accept = 'audio/*,video/*,.mov';
+        input.onchange = function () {
+            app.io.onfile(this.files[0]);
+        }; input.click();
+    }
+    {
+        const lis = document.getElementById('filePannel').children;
+        lis[0].onclick = _uploadFile;
+        lis[1].onclick = async () => {    // 导入midi
+            const input = document.createElement('input');
+            input.type = 'file'; input.accept = '.mid';
+            input.onchange = function () {
+                app.io.onfile(this.files[0]);
+            }; input.click();
+        };
+        lis[2].onclick = () => {
+            app.io.onfile();
+        }
+        lis[3].onclick = () => {
+            if (!app.Spectrogram._spectrogram) {
+                alert("请先导入音频！");
+                return;
+            } app.io.projFile.write();
+        }
+        lis[4].onclick = () => {    // midi导出
+            if (!app.Spectrogram._spectrogram) {
+                alert("请先导入音频！");
+                return;
+            }
+            app.io.midiFile.export.UI();
+        };
+        const textfield = numberedScore.querySelector('textarea');
+        textfield.addEventListener('focus', () => app.preventShortCut = true);
+        textfield.addEventListener('blur', () => app.preventShortCut = false);
+        numberedScore.querySelector('button').onclick = () => { // 转数字谱
+            const note = ["1", "#1", "2", "#2", "3", "4", "#4", "5", "#5", "6", "#6", "7"];
+            function indexToje(index) { // indexToje(0) -> "1"
+                let position = (index % 12 + 12) % 12;
+                let k = Math.floor(index / 12);
+                let brackets = '';
+                for (let i = 0; i < Math.abs(k); i++) {
+                    brackets = brackets + '[';
+                }
+                return ((k > 0) ? brackets : brackets.replace(/\[/g, '(')) + note[position] + ((k > 0) ? brackets.replace(/\[/g, ']') : brackets.replace(/\[/g, ')'));
+            }
+            const midi = app.MidiAction.midi;
+            const scores = Array.from(app.MidiAction.channelDiv.channel, () => '');
+            let time = Array.from(scores, () => -1);
+            for (const note of midi) {
+                let id = note.ch;
+                if (time[id] >= 0) {
+                    let interval = (note.x1 - time[id]) * app.dt;
+                    if (interval > 1000) scores[id] += '\n';
+                    else if (interval > 400) scores[id] += ' ';
+                }
+                scores[id] += indexToje(note.y - 36);   // C4认为是'1'
+                time[id] = note.x1;
+            }
+            let out = '';
+            for (let i = 0; i < scores.length; i++)
+                out += `音轨${i} :${app.MidiAction.channelDiv.channel[i].instrument}\n${scores[i]}\n`;
+            textfield.value = out;
+        };
+    }
+
+    // ==== 分析界面 ==== //
+    {
+        const lis = document.getElementById('analysePannel').children;
+        lis[0].onclick = function () {
+            // 如果已经有结果了就删除
+            if (this.childElementCount) {
+                this.removeChild(this.lastChild);
+                return;
+            }
+            if (!app.Spectrogram._spectrogram || app.midiMode) {
+                alert("请先导入音频！");
+                return;
+            }
+            let [tonality, energy] = NoteAnalyser.Tonality(app.Spectrogram._spectrogram);
+            const div = document.createElement('div');
+            div.innerHTML = `<h5>调性: ${tonality}</h5>
+            <div class="tonalityResult">
+                <div style="background:#FF4500;width:${energy[0] * 100}%;">C</div>
+                <div style="background:#FFD700;width:${energy[1] * 100}%;">C#</div>
+                <div style="background:#32CD32;width:${energy[2] * 100}%;">D</div>
+                <div style="background:#00BFFF;width:${energy[3] * 100}%;">D#</div>
+                <div style="background:#FF6347;width:${energy[4] * 100}%;">E</div>
+                <div style="background:#FF1493;width:${energy[5] * 100}%;">F</div>
+                <div style="background:#7FFF00;width:${energy[6] * 100}%;">F#</div>
+                <div style="background:#1E90FF;width:${energy[7] * 100}%;">G</div>
+                <div style="background:#FFA500;width:${energy[8] * 100}%;">G#</div>
+                <div style="background:#EE82EE;width:${energy[9] * 100}%;">A</div>
+                <div style="background:#ADFF2F;width:${energy[10] * 100}%;">A#</div>
+                <div style="background:#87CEFA;width:${energy[11] * 100}%;">B</div>
+            </div>`;
+            this.appendChild(div);
+        };
+        // 节奏分析
+        lis[1].onclick = function () {
+            const lastChild = this.lastElementChild;
+            if (lastChild && lastChild.tagName === 'DIV') {
+                lastChild.remove();
+            }
+            if (!app.Spectrogram._spectrogram || app.midiMode) {
+                alert("请先导入音频！");
+                return;
+            }
+            const patternAuto = this.querySelector('input').checked;
+            const BPM = app.Analyser.beatEst(40, patternAuto);
+            const div = document.createElement('div');
+            div.innerHTML = `<h5>BPM: ${BPM.toFixed(2)}</h5>`;
+            this.appendChild(div);
+        };
+        {   // 自动填充音符
+            const inputs = lis[2].querySelectorAll('input');
+            const btns = lis[2].querySelectorAll('button');
+            const checkbox = inputs[0];
+            checkbox.addEventListener('click', _checkBoxBlur);
+            const threshold = inputs[1];
+            threshold.addEventListener('input', function () {
+                this.style.background = app.Spectrogram.getColor(this.value)
+            });
+            hideLableRange.new(threshold).reset().parentElement.classList.add('fullRange');
+            function autoFill(from, to) {
+                let ch;
+                const chdiv = app.MidiAction.channelDiv;
+                chdiv.switchUpdateMode(false);
+                if (checkbox.checked) {  // 新建音轨
+                    ch = chdiv.addChannel();
+                    if (!ch) return;    // addChannel会alert
+                } else ch = chdiv.selected;
+                if (!ch) {
+                    alert("未选中音轨！");
+                    return;
+                }
+                let id = ch.index;
+                let notes = NoteAnalyser.autoFill(
+                    app.Spectrogram.getCurrentSpectrum(),
+                    parseInt(threshold.value),
+                    from, to
+                );
+                for (const nt of notes) nt.ch = id;
+                app.MidiAction.midi.push(...notes);
+                app.MidiAction.midi.sort((a, b) => a.x1 - b.x1);
+                chdiv.switchUpdateMode(true, true);     // 强制更新，因为不一定调用了addChannel
+            }
+            btns[0].onclick = () => {   // 重复区间内
+                if (!app.Spectrogram._spectrogram) {
+                    alert('请导入音频！');
+                    return;
+                }
+                if (app.TimeBar.repeatEnd <= app.TimeBar.repeatStart) {
+                    alert('区间错误！(起点不能晚于终点)');
+                    return;
+                }
+                autoFill(
+                    (app.TimeBar.repeatStart / app.dt) | 0,
+                    app.TimeBar.repeatEnd / app.dt
+                );
+            };
+            btns[1].onclick = () => {
+                if (!app.Spectrogram._spectrogram) {
+                    alert('请导入音频！');
+                    return;
+                } autoFill();
+            };
+        }
+        // 去谐波
+        lis[3].onclick = function () {
+            if (!app.Spectrogram._spectrogram || app.midiMode) {
+                alert("请先导入音频！");
+                return;
+            }
+            app.Analyser.reduceHarmonic().then((done) => {
+                if (!done) return;
+                if (this.childElementCount) return;
+                this.firstChild.textContent = "重新去除谐波";
+                let ui = document.createElement('div');
+                ui.innerHTML = `<h5 style="display: inline-block;">谐波保留:</h5><div class="wf fr">多&nbsp;<input type="range" max="1" min="0" value="${app.Spectrogram.Hmultiple}" step="0.05">&nbsp;少</div>`;
+                const r = ui.querySelector('input');
+                r.addEventListener('input', function () {
+                    app.Spectrogram.Hmultiple = parseFloat(this.value);
+                });
+                r.classList.add('fullRange');
+                ui.addEventListener('click', _checkBoxBlur);
+                this.appendChild(ui);
+                myRange.new(r).reset();
+            });
+        };
+        // 自动音符对齐
+        lis[4].onclick = () => app.Analyser.autoNoteAlign();
+        // 人工智障扒谱
+        lis[5].onclick = function () {
+            if (!app.Analyser.basicamt(null, true)) return; // 仅仅判断是否可以进行AI扒谱
+            const btn = this;
+            // 由于效果并不好，因此不会自动执行；而程序为了省内存不会保留音频数据，因此需要重新上传音频
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'audio/*,video/*,.mov';
+            input.onchange = function () {
+                btn.innerHTML = "AI扒谱中...";
+                const fileReader = new FileReader();
+                fileReader.onload = (e) => {
+                    // 解码音频文件为音频缓冲区
+                    app.audioContext.decodeAudioData(e.target.result).then((decodedData) =>
+                        app.Analyser.basicamt(decodedData, false)
+                    ).then(() => {
+                        btn.innerHTML = "人工智障扒谱";
+                    });
+                }; fileReader.readAsArrayBuffer(this.files[0]);
+            }; input.click();
+        };
+        // 音色分离扒谱
+        lis[6].onclick = function () {
+            if (!app.Analyser.basicamt(null, true)) return; // 仅仅判断是否可以进行AI扒谱
+            const btn = this;
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'audio/*,video/*,.mov';
+            input.onchange = function () {
+                // 文件选完后弹出分离数量选择UI
+                let tempDiv = document.createElement('div');
+                tempDiv.innerHTML = `
+<div class="request-cover">
+    <div class="card hvCenter">
+        <h3>选择音色数目</h3>
+        请选择要分离的音色数目（2-4）<br>适合乐器差异较大的乐曲<br>
+        <input type="number" min="2" max="4" value="2">
+        <div class="layout layout-first">
+            <button class="ui-cancel">取消</button>
+            <span style="width: 1em;"></span>
+            <button class="ui-confirm">确认</button>
+        </div>
+    </div>
+</div>`;
+                const ui = tempDiv.firstElementChild;
+                const close = () => ui.remove();
+                ui.querySelector('.ui-cancel').onclick = close;
+                ui.querySelector('.ui-confirm').onclick = () => {
+                    let k = parseInt(ui.querySelector('input').value);
+                    if (isNaN(k) || k < 2 || k > 5) {
+                        alert('请输入2-4的整数！');
+                        return;
+                    }
+                    close();
+                    btn.innerHTML = "AI扒谱中...";
+                    const fileReader = new FileReader();
+                    fileReader.onload = (e) => {
+                        app.audioContext.decodeAudioData(e.target.result).then((decodedData) =>
+                            app.Analyser.septimbre(decodedData, k)
+                        ).then(() => {
+                            btn.innerHTML = "音色分离扒谱";
+                        });
+                    }; fileReader.readAsArrayBuffer(input.files[0]);
+                }
+                document.body.insertBefore(ui, document.body.firstChild);
+            };
+            input.click();
+        };
+    }
+
+    // ==== 设置界面 ==== //
+    {
+        const lis = document.getElementById('settingPannel').children;
+        lis[0].dataset.value = app.width;
+        lis[0].firstChild.onclick = (e) => {
+            e.target.blur();
+            --app.width;    // 设置width会自动被setter限位
+            lis[0].dataset.value = app.width;
+            app.scroll2();
+        };
+        lis[0].lastChild.onclick = (e) => {
+            e.target.blur();
+            lis[0].dataset.value = ++app.width;
+            app.scroll2();
+        };
+        lis[1].dataset.value = app.height;
+        lis[1].firstChild.onclick = (e) => {
+            e.target.blur();
+            --app.height;    // 设置height会自动被setter限位
+            lis[1].dataset.value = app.height;
+            app.scroll2();
+        };
+        lis[1].lastChild.onclick = (e) => {
+            e.target.blur();
+            lis[1].dataset.value = ++app.height;
+            app.scroll2();
+        };
+        lis[2].dataset.value = app.layers.action.Alpha;
+        lis[2].firstChild.onclick = (e) => {
+            e.target.blur();
+            if (app.layers.action.Alpha <= 1) return;
+            lis[2].dataset.value = app.layers.action.Alpha -= 2;
+        };
+        lis[2].lastChild.onclick = (e) => {
+            e.target.blur();
+            lis[2].dataset.value = app.layers.action.Alpha += 2;
+        };
+        lis[3].dataset.value = app.BeatBar.minInterval;
+        lis[3].firstChild.onclick = (e) => {
+            e.target.blur();
+            if (app.BeatBar.minInterval <= 5) return;
+            lis[3].dataset.value = --app.BeatBar.minInterval;
+        };
+        lis[3].lastChild.onclick = (e) => {
+            e.target.blur();
+            lis[3].dataset.value = ++app.BeatBar.minInterval;
+        };
+        lis[4].dataset.value = app.Keyboard.Harmonics;
+        lis[4].firstChild.onclick = (e) => {
+            e.target.blur();
+            if (app.Keyboard.Harmonics <= 0) return;
+            lis[4].dataset.value = --app.Keyboard.Harmonics;
+        };
+        lis[4].lastChild.onclick = (e) => {
+            e.target.blur();
+            if (app.Keyboard.Harmonics >= 6) return;
+            lis[4].dataset.value = ++app.Keyboard.Harmonics;
+        };
+        const repeatInput = lis[5].querySelectorAll('input');
+        function checkTime(time) {
+            const timeRegex = /^\d{1,2}:\d{1,2}:\d{1,3}$/;
+            return timeRegex.test(time);
+        }
+        function Time2Ms(time) {
+            const t = time.split(':');
+            return parseInt(t[0]) * 60000 + parseInt(t[1]) * 1000 + parseInt(t[2]);
+        }
+        repeatInput[0].oninput = repeatInput[1].oninput = function () {
+            this.style.color = checkTime(this.value) ? 'var(--theme-text)' : 'red';
+        };
+        const repbtn = lis[5].querySelectorAll('button');
+        repbtn[0].onclick = (e) => {
+            app.TimeBar.setRepeat(-1, -1);
+            e.target.blur();
+        };
+        repbtn[1].onclick = (e) => {
+            e.target.blur();
+            if (checkTime(repeatInput[0].value) && checkTime(repeatInput[1].value)) {
+                let i1 = Time2Ms(repeatInput[0].value);
+                let i2 = Time2Ms(repeatInput[1].value);
+                if (i1 > i2) {
+                    let temp = i2;
+                    i2 = i1; i1 = temp;
+                }
+                app.TimeBar.setRepeat(i1, i2);
+            } else alert('时间格式错误！');
+        }
+    }
+    // ==== 交互细节 ==== //
+    document.querySelector('.top-logo').addEventListener('click', () => {
+        // 如果已经有分析数据了，就打开新的界面
+        if (app.Spectrogram._spectrogram) {
+            if (confirm('本页面已有分析结果，是否打开新页面进行分析？')) {
+                window.open(window.location.href, '_blank');
+            }
+        } else _uploadFile();
+    });
+    window.onbeforeunload = function (e) {
+        if (app.MidiAction.midi.length) {
+            e.preventDefault(); // 取消默认的关闭提示消息
+            e.returnValue = ''; // Chrome 需要在返回值上赋值            
+        }
+    };
+    // 加载插件
+    if (window.plugins) {
+        window.plugins.forEach(plugin => plugin(window.app));
+        window.plugins = null;   // 卸载插件接口，释放内存
+    }
+    // 扩大复选框的点击范围 取消焦点
+    document.querySelectorAll('input[type="checkbox"]').forEach(input => {
+        input.addEventListener('click', _checkBoxBlur);
+    });
+</script>
+<script>
+    const dragEvents = {
+        dragover: function (e) {
+            e.preventDefault(); // 必须阻止默认事件才能触发drop事件
+        }, // dragover触发过于频繁，所以用dragenter来增加dragIn
+        dragenter: function (e) {
+            e.preventDefault();
+            // 检查是否有文件被拖入 以防止dom被拖入也触发
+            if (Array.from(e.dataTransfer.types).includes('Files')) {
+                document.body.classList.add('dragIn');
+            }
+        },
+        dragleave: function (e) {
+            e.preventDefault();
+            if (!document.body.contains(e.relatedTarget)) { // 不这样写会导致立即删去dragIn类
+                document.body.classList.remove('dragIn');
+            }
+        },
+        drop: function (e) {
+            e.preventDefault();
+            document.body.classList.remove('dragIn');
+            if (Array.from(e.dataTransfer.types).includes('Files')) {   // 判断是否有文件被拖入
+                app.io.onfile(e.dataTransfer.files[0]);
+            }
+        },
+        registDrag: function () {
+            document.body.addEventListener('dragover', dragEvents.dragover);
+            document.body.addEventListener('dragenter', dragEvents.dragenter);
+            document.body.addEventListener('dragleave', dragEvents.dragleave);
+            document.body.addEventListener('drop', dragEvents.drop);
+        },
+        deRegistDrag: function () {
+            document.body.removeEventListener('dragover', dragEvents.dragover);
+            document.body.removeEventListener('dragenter', dragEvents.dragenter);
+            document.body.removeEventListener('dragleave', dragEvents.dragleave);
+            document.body.removeEventListener('drop', dragEvents.drop);
+        }
+    }; dragEvents.registDrag();
+
+    app.event.addEventListener('fileui', dragEvents.deRegistDrag);
+    app.event.addEventListener('fileuiclose', dragEvents.registDrag);
+    app.event.addEventListener('fileerror', (e) => {
+        dragEvents.registDrag();
+        alert("文件解析！" + e.detail.message);
+    });
+</script>
+<script>
+    /**
+     * iOS 长按适配全局
+     * 功能：在 iOS 设备上，将长按操作映射为 contextmenu 事件
+     */
+    (function () {
+        // 检测是否为 iOS 设备
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (!isIOS) return;
+
+        let longPressTimer = null;
+        const LONG_PRESS_DURATION = 500; // 长按阈值 ms
+        let startX = null, startY = null; // 记录触摸起始位置
+
+        document.addEventListener('touchstart', function (e) {
+            // 如果已经存在长按目标，清除之前的计时器
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+            // 只处理单个触点
+            if (e.touches.length > 1) return;
+            // 保存触摸点信息
+            const touch = e.touches[0];
+            if (!touch) return;
+            startX = touch.clientX;
+            startY = touch.clientY;
+            // 获取触摸的目标元素
+            const targetElement = e.target;
+            if (!targetElement) return;
+            // 启动长按计时器
+            longPressTimer = setTimeout(function () {
+                // 在触摸的目标元素上触发事件
+                const contextMenuEvent = new MouseEvent('contextmenu', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window,
+                    clientX: startX,
+                    clientY: startY,
+                    button: 2 // 模拟右键按钮
+                });
+                targetElement.dispatchEvent(contextMenuEvent);
+                longPressTimer = null;
+            }, LONG_PRESS_DURATION);
+        }, { passive: true });
+
+        // 处理触摸移动（移动超过5像素时取消长按）
+        document.addEventListener('touchmove', function (e) {
+            if (longPressTimer && startX !== null && startY !== null) {
+                const touch = e.touches[0];
+                if (touch) {
+                    if (Math.hypot(touch.clientX - startX, touch.clientY - startY) > 8) {
+                        clearTimeout(longPressTimer);
+                        longPressTimer = null;
+                    }
+                }
+            }
+        }, { passive: true });
+
+        const cancelLongPress = () => {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+        };
+        document.addEventListener('touchend', cancelLongPress);
+        document.addEventListener('touchcancel', cancelLongPress);
+        console.log('iOS 长按适配已启用');
+    })();
+</script>
+
+</html>

@@ -1,0 +1,106 @@
+/* 依赖：style.css中的.card和.hvCenter*/
+.request-cover {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #6c6c6c78;
+    z-index: 99;
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.request-cover .card {
+    position: fixed;
+    width: auto;
+    height: auto;
+    background-color: rgb(37, 38, 45);;
+    padding: 1em;
+    overflow: hidden;
+    color: rgb(235, 235, 235);
+}
+
+.request-cover .title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: white;
+}
+/* 无特殊情况用label，特殊情况用span */
+.request-cover span.title {
+    overflow: hidden;
+    display: inline-block;
+    max-width: 11em;
+    min-width: 8em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+.request-cover span.title:hover {
+    overflow: visible;
+    white-space: normal;
+    z-index: 100;
+    max-width: none;
+}
+
+.card.hvCenter .layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 8px 5px 8px;
+    margin: 0.2em;
+    background: inherit;
+    color: inherit;
+}
+
+.card.hvCenter .layout-first {
+    margin-top: calc(0.2em + 5px);
+}
+
+.request-cover .card.hvCenter button {
+    margin: 0 0.25em;
+    border: none;
+    border-radius: 0.2em;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    outline: none;
+    color: inherit;
+}
+.request-cover .ui-confirm {
+    flex: 1;
+    background: rgb(60, 87, 221);
+    color: white;
+}
+.request-cover .ui-cancel {
+    flex: 1;
+    background-color: #2e3039;
+    color: white;
+}
+
+.card.hvCenter input,
+.card.hvCenter select {
+    flex: 1;
+    background: inherit;
+    border: 1px solid rgb(54, 58, 69);
+    border-radius: 0.25em;
+    color: inherit;
+    margin: 0 0.8em;
+    padding-left: 0.6em;
+    padding: 0.35em 0em 0.3em 0.5em;
+}
+
+/* 进度条 */
+.porgress-track {
+    display: block;
+    width: 16em;
+    height: 1em;
+    border-radius: 2em;
+    background-color: #1e1f24;
+    overflow: hidden;
+}
+
+.porgress-value {
+    width: 0;
+    height: inherit;
+    background-color: #761fc8;
+}
