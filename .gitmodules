@@ -4,3 +4,6 @@
 [submodule "src/submodules/Smoosic"]
 	path = src/submodules/Smoosic
 	url = https://github.com/Smoosic/Smoosic.git
+[submodule "src/submodules/composing-studio"]
+	path = src/submodules/composing-studio
+	url = https://github.com/ekzhang/composing.studio.git

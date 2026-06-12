@@ -9,6 +9,7 @@ import {
   Headset,
   Setting,
   Notebook,
+  Edit,
 } from '@element-plus/icons-vue'
 
 function handleOpen(key: string, keyPath: string[]) {
@@ -60,6 +61,11 @@ function handleClose(key: string, keyPath: string[]) {
     <el-menu-item index="/smoosic">
       <el-icon><Monitor /></el-icon>
       <template #title>Smoosic</template>
+    </el-menu-item>
+
+    <el-menu-item index="/abc-notes">
+      <el-icon><Edit /></el-icon>
+      <template #title>AbcNotes</template>
     </el-menu-item>
   </el-menu>
 </template>
