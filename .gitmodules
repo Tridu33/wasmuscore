@@ -6,10 +6,12 @@
 	url = https://github.com/Smoosic/Smoosic.git
 [submodule "src/submodules/composing-studio"]
 	path = src/submodules/composing-studio
-	url = https://github.com/ekzhang/composing.studio.git
+	url = git@github.com:Tridu33/composing.studio.git
+	branch = wasmuscore-deps
 [submodule "src/submodules/alphaTab"]
 	path = src/submodules/alphaTab
 	url = https://github.com/CoderLine/alphaTab.git
 [submodule "src/submodules/Neothesia"]
 	path = src/submodules/Neothesia
-	url = https://github.com/PolyMeilex/Neothesia.git
+	url = git@github.com:Tridu33/Neothesia.git
+	branch = wasmuscore-deps
