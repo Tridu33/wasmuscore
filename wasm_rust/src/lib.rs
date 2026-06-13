@@ -39,7 +39,9 @@ pub fn main() -> Result<(), JsValue> {
 /// 从字节数组加载 MIDI 文件
 #[wasm_bindgen]
 pub fn load_midi_from_bytes(data: Vec<u8>) -> Result<JsValue, JsValue> {
-    let mut state = PLAYER_STATE.lock().map_err(|e| JsValue::from_str(&e.to_string()))?;
+    let mut state = PLAYER_STATE
+        .lock()
+        .map_err(|e| JsValue::from_str(&e.to_string()))?;
 
     // 将字节数组写入临时文件
     let temp_path = "/tmp/uploaded_midi.mid";
@@ -86,8 +88,10 @@ pub fn load_midi_from_bytes(data: Vec<u8>) -> Result<JsValue, JsValue> {
 /// 开始播放
 #[wasm_bindgen]
 pub fn play() -> Result<(), JsValue> {
-    let mut state = PLAYER_STATE.lock().map_err(|e| JsValue::from_str(&e.to_string()))?;
-    
+    let mut state = PLAYER_STATE
+        .lock()
+        .map_err(|e| JsValue::from_str(&e.to_string()))?;
+
     if let Some(ref mut playback) = state.playback {
         playback.resume();
         state.is_playing = true;
@@ -100,8 +104,10 @@ pub fn play() -> Result<(), JsValue> {
 /// 暂停播放
 #[wasm_bindgen]
 pub fn pause() -> Result<(), JsValue> {
-    let mut state = PLAYER_STATE.lock().map_err(|e| JsValue::from_str(&e.to_string()))?;
-    
+    let mut state = PLAYER_STATE
+        .lock()
+        .map_err(|e| JsValue::from_str(&e.to_string()))?;
+
     if let Some(ref mut playback) = state.playback {
         playback.pause();
         state.is_playing = false;
@@ -114,8 +120,10 @@ pub fn pause() -> Result<(), JsValue> {
 /// 停止播放
 #[wasm_bindgen]
 pub fn stop() -> Result<(), JsValue> {
-    let mut state = PLAYER_STATE.lock().map_err(|e| JsValue::from_str(&e.to_string()))?;
-    
+    let mut state = PLAYER_STATE
+        .lock()
+        .map_err(|e| JsValue::from_str(&e.to_string()))?;
+
     if let Some(ref mut playback) = state.playback {
         playback.reset();
         state.is_playing = false;
@@ -128,8 +136,10 @@ pub fn stop() -> Result<(), JsValue> {
 /// 设置播放位置 (毫秒)
 #[wasm_bindgen]
 pub fn seek_to(milliseconds: u64) -> Result<(), JsValue> {
-    let mut state = PLAYER_STATE.lock().map_err(|e| JsValue::from_str(&e.to_string()))?;
-    
+    let mut state = PLAYER_STATE
+        .lock()
+        .map_err(|e| JsValue::from_str(&e.to_string()))?;
+
     if let Some(ref mut playback) = state.playback {
         let duration = Duration::from_millis(milliseconds);
         playback.set_time(duration);
@@ -142,8 +152,10 @@ pub fn seek_to(milliseconds: u64) -> Result<(), JsValue> {
 /// 获取当前播放状态
 #[wasm_bindgen]
 pub fn get_playback_status() -> Result<JsValue, JsValue> {
-    let state = PLAYER_STATE.lock().map_err(|e| JsValue::from_str(&e.to_string()))?;
-    
+    let state = PLAYER_STATE
+        .lock()
+        .map_err(|e| JsValue::from_str(&e.to_string()))?;
+
     if let Some(ref playback) = state.playback {
         let status = serde_json::json!({
             "is_playing": state.is_playing,
@@ -162,12 +174,14 @@ pub fn get_playback_status() -> Result<JsValue, JsValue> {
 /// 获取当前时间点的所有音符事件
 #[wasm_bindgen]
 pub fn get_active_notes(delta_ms: u64) -> Result<JsValue, JsValue> {
-    let mut state = PLAYER_STATE.lock().map_err(|e| JsValue::from_str(&e.to_string()))?;
-    
+    let mut state = PLAYER_STATE
+        .lock()
+        .map_err(|e| JsValue::from_str(&e.to_string()))?;
+
     if let Some(ref mut playback) = state.playback {
         let delta = Duration::from_millis(delta_ms);
         let events = playback.update(delta);
-        
+
         // 提取 NoteOn 事件
         let notes: Vec<_> = events
             .iter()
@@ -187,7 +201,7 @@ pub fn get_active_notes(delta_ms: u64) -> Result<JsValue, JsValue> {
                 }
             })
             .collect();
-        
+
         Ok(serde_wasm_bindgen::to_value(&notes).map_err(|e| JsValue::from_str(&e.to_string()))?)
     } else {
         Err(JsValue::from_str("No MIDI loaded"))
@@ -197,8 +211,10 @@ pub fn get_active_notes(delta_ms: u64) -> Result<JsValue, JsValue> {
 /// 获取所有音符数据 (用于可视化)
 #[wasm_bindgen]
 pub fn get_all_notes() -> Result<JsValue, JsValue> {
-    let state = PLAYER_STATE.lock().map_err(|e| JsValue::from_str(&e.to_string()))?;
-    
+    let state = PLAYER_STATE
+        .lock()
+        .map_err(|e| JsValue::from_str(&e.to_string()))?;
+
     if let Some(ref midi_file) = state.midi_file {
         let notes: Vec<_> = midi_file
             .tracks
@@ -218,7 +234,7 @@ pub fn get_all_notes() -> Result<JsValue, JsValue> {
                 })
             })
             .collect();
-        
+
         Ok(serde_wasm_bindgen::to_value(&notes).map_err(|e| JsValue::from_str(&e.to_string()))?)
     } else {
         Err(JsValue::from_str("No MIDI loaded"))

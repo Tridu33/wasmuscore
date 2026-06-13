@@ -23,7 +23,7 @@ onMounted(() => {
     </div>
     <iframe
       ref="iframeRef"
-      src="/AbcNotes/index.html"
+      src="/AbcNotes/index.html#/"
       class="abc-notes-iframe"
       frameborder="0"
     />

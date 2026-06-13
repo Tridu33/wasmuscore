@@ -1,20 +1,29 @@
-declare module 'sf2-player' {
-  export interface Sf2PlayerOptions {
-    audioContext?: AudioContext
-    destination?: AudioNode
-    onProgress?: (progress: number) => void
+declare module '@logue/sf2synth' {
+  interface WebMidiLinkOptions {
+    url?: string
+    placeholder?: string
+    drawSynth?: boolean
+    cache?: boolean
   }
 
-  export interface PlayNoteOptions {
-    gain?: number
-    channel?: number
+  interface WebMidiLink {
+    ready: boolean
+    setup(url?: string): Promise<void>
+    setupByBuffer(buffer: ArrayBuffer): void
+    processMidiMessage(message: [number, number, number]): void
+    setLoadCallback(callback: () => void): void
   }
 
-  export class Sf2Player {
-    constructor(url: string, options?: Sf2PlayerOptions)
-    load(): Promise<void>
-    playNote(note: number, options?: PlayNoteOptions): Promise<any>
-    stop(releaseTime?: number): Promise<void>
-    destroy(): void
+  interface Sf2SynthModule {
+    version: string
+    build: string
+    WebMidiLink: {
+      new (options?: WebMidiLinkOptions): WebMidiLink
+    }
+    WebMidiApi: any
+    Parser: any
   }
+
+  const sf2synth: Sf2SynthModule
+  export default sf2synth
 }

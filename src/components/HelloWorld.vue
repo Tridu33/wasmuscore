@@ -23,7 +23,7 @@ const value1 = ref(true)
 
   <p>
     See
-    <a href="https://gitee.com/slamkuntech/wasmusicorelectron" target="_blank">WasMuscore</a> for more
+    <a href="https://gitee.com/slamkuntech/wasmusicorelectron" target="_blank">Wascore</a> for more
     information.
   </p>
 

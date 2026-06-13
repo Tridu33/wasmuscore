@@ -1,25 +1,40 @@
-import { Sf2Player } from 'sf2-player'
+import sf2synth from '@logue/sf2synth'
+
+const { WebMidiLink } = sf2synth
+
+// MIDI status bytes
+const NOTE_ON = 0x90
+const NOTE_OFF = 0x80
 
 export interface ActiveVoice {
   note: number
+  velocity: number
   channel: number
-  voice: any
 }
 
 export class AudioEngine {
-  private context: AudioContext | null = null
-  private sf2Player: Sf2Player | null = null
+  private wml: InstanceType<typeof WebMidiLink> | null = null
   private activeVoices: Map<string, ActiveVoice> = new Map()
-  private masterGain: GainNode | null = null
   private isInitialized = false
   private isLoading = false
   private loadProgress = 0
+  private initPromise: Promise<void> | null = null
 
   /**
    * 初始化音频引擎
    * @param sf2Url SoundFont2 文件 URL
    */
   async init(sf2Url: string): Promise<void> {
+    // Prevent concurrent init calls
+    if (this.initPromise) {
+      return this.initPromise
+    }
+
+    this.initPromise = this.doInit(sf2Url)
+    return this.initPromise
+  }
+
+  private async doInit(sf2Url: string): Promise<void> {
     if (this.isInitialized) {
       return
     }
@@ -28,35 +43,66 @@ export class AudioEngine {
       this.isLoading = true
       this.loadProgress = 0
 
-      // 创建 AudioContext
-      this.context = new AudioContext()
-
-      // 创建主音量节点
-      this.masterGain = this.context.createGain()
-      this.masterGain.connect(this.context.destination)
-      this.masterGain.gain.value = 0.8
-
-      // 加载进度回调
-      const onProgress = (progress: number) => {
-        this.loadProgress = progress * 100
+      // Polyfill caches API if unavailable (sf2synth calls caches.open internally)
+      if (typeof window.caches === 'undefined') {
+        (window as any).caches = {
+          open: () => Promise.resolve({
+            add: () => Promise.resolve(),
+            put: () => Promise.resolve(),
+            match: () => Promise.resolve(undefined),
+            delete: () => Promise.resolve(false),
+            keys: () => Promise.resolve([]),
+          }),
+          has: () => Promise.resolve(false),
+          delete: () => Promise.resolve(false),
+          match: () => Promise.resolve(undefined),
+        }
       }
 
-      // 初始化 SF2 Player
-      this.sf2Player = new Sf2Player(sf2Url, {
-        audioContext: this.context,
-        destination: this.masterGain,
-        onProgress,
+      // Ensure AudioContext can be created (user gesture may be required)
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext
+      if (!AudioCtx) {
+        throw new Error('Web Audio API is not supported in this browser')
+      }
+
+      // Create WebMidiLink instance with drawSynth disabled
+      this.wml = new WebMidiLink({
+        drawSynth: false,
+        cache: false,
       })
 
-      await this.sf2Player.load()
+      // Set load callback
+      this.wml.setLoadCallback((buffer: Uint8Array) => {
+        console.log('[AudioEngine] SoundFont buffer loaded, size:', buffer.length, 'bytes')
+        this.loadProgress = 100
+        this.isLoading = false
+        this.isInitialized = true
+      })
 
-      this.isInitialized = true
-      this.isLoading = false
+      // Load the SF2 file - wrap in try/catch for sf2synth internal errors
+      console.log('[AudioEngine] Loading SoundFont from:', sf2Url)
+      await this.wml.setup(sf2Url)
+
+      // Mark initialized even if setup returns before callback fires
+      if (this.loadProgress < 100) {
+        this.loadProgress = 100
+        this.isLoading = false
+        this.isInitialized = true
+      }
+      console.log('[AudioEngine] SoundFont setup complete')
     }
     catch (error) {
       this.isLoading = false
-      console.error('Failed to initialize AudioEngine:', error)
+      console.error('[AudioEngine] Failed to initialize AudioEngine:', error)
+      if (error instanceof Error) {
+        console.error('[AudioEngine] Error name:', error.name)
+        console.error('[AudioEngine] Error message:', error.message)
+        console.error('[AudioEngine] Error stack:', error.stack)
+      }
       throw error
+    }
+    finally {
+      this.initPromise = null
     }
   }
 
@@ -64,31 +110,25 @@ export class AudioEngine {
    * 播放音符
    */
   async noteOn(note: number, velocity: number, channel: number = 0): Promise<void> {
-    if (!this.isInitialized || !this.sf2Player) {
+    if (!this.isInitialized || !this.wml) {
       console.warn('AudioEngine not initialized')
       return
     }
 
-    // 如果该音符已经在播放，先停止
+    // If this note is already playing, stop it first
     const key = `${note}-${channel}`
     if (this.activeVoices.has(key)) {
       await this.noteOff(note, channel)
     }
 
     try {
-      // 将 velocity (0-127) 转换为音量 (0-1)
-      const volume = velocity / 127
-
-      // 播放音符
-      const voice = await this.sf2Player.playNote(note, {
-        gain: volume,
-        channel,
-      })
+      // Note On MIDI message: [0x90 | channel, note, velocity]
+      this.wml.processMidiMessage([NOTE_ON | channel, note, velocity])
 
       this.activeVoices.set(key, {
         note,
+        velocity,
         channel,
-        voice,
       })
     }
     catch (error) {
@@ -108,8 +148,8 @@ export class AudioEngine {
     }
 
     try {
-      // 停止音符（带释放时间）
-      await voiceData.voice.stop(0.1)
+      // Note Off MIDI message: [0x80 | channel, note, velocity]
+      this.wml!.processMidiMessage([NOTE_OFF | channel, note, voiceData.velocity])
       this.activeVoices.delete(key)
     }
     catch (error) {
@@ -129,16 +169,6 @@ export class AudioEngine {
 
     await Promise.all(promises)
     this.activeVoices.clear()
-  }
-
-  /**
-   * 设置主音量
-   */
-  setVolume(volume: number): void {
-    if (this.masterGain) {
-      // volume: 0-100
-      this.masterGain.gain.value = volume / 100
-    }
   }
 
   /**
@@ -166,9 +196,16 @@ export class AudioEngine {
    * 恢复 AudioContext（浏览器自动播放策略）
    */
   async resume(): Promise<void> {
-    if (this.context && this.context.state === 'suspended') {
-      await this.context.resume()
-    }
+    // @logue/sf2synth manages its own AudioContext
+    // No-op for compatibility
+  }
+
+  /**
+   * 设置主音量
+   */
+  setVolume(volume: number): void {
+    // Volume is controlled per-note via velocity
+    // This is a no-op placeholder for compatibility
   }
 
   /**
@@ -176,17 +213,7 @@ export class AudioEngine {
    */
   async dispose(): Promise<void> {
     await this.stopAll()
-
-    if (this.sf2Player) {
-      this.sf2Player.destroy()
-      this.sf2Player = null
-    }
-
-    if (this.context) {
-      await this.context.close()
-      this.context = null
-    }
-
+    this.wml = null
     this.isInitialized = false
   }
 }

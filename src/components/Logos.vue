@@ -1,10 +1,10 @@
 <template>
   <div>
     <a href="https://gitee.com/slamkuntech/wasmusicorelectron" target="_blank">
-      <img src="../assets/WasMuscore.svg" class="logo WasMuscore" alt="WasMuscore logo">
+      <img src="../assets/Wascore.svg" class="logo Wascore" alt="Wascore logo">
     </a>
     <a href="https://gitee.com/slamkuntech/wasmusicorelectron" target="_blank">
-      <img src="../assets/logo.svg" class="logo WasMuscoreLogo" alt="WasMuscoreLogo! logo">
+      <img src="../assets/logo.svg" class="logo WascoreLogo" alt="WascoreLogo! logo">
     </a>
     <br>
     <a href="https://github.com/electron" target="_blank">

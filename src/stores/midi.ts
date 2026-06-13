@@ -163,6 +163,11 @@ export const useMidiStore = defineStore('midi', () => {
   }
 
   async function seekTo(milliseconds: number) {
+    if (Number.isNaN(milliseconds) || milliseconds < 0) {
+      console.warn('[seekTo] Invalid milliseconds value:', milliseconds)
+      return
+    }
+
     try {
       const wasmModule = await import('~/utils/wasmuscore/loader')
       await wasmModule.seekTo(milliseconds)

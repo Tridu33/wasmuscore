@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { MidiNote } from '~/stores/midi'
 import { ElMessage } from 'element-plus'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import MidiRecorder from '~/components/MidiRecorder.vue'
 import PianoRoll from '~/components/PianoRoll.vue'
 
@@ -78,7 +78,9 @@ function handleRecordingStop(notes: Array<{ note: number, velocity: number, chan
 }
 
 // 初始化
-initWebMidi()
+onMounted(() => {
+  initWebMidi()
+})
 </script>
 
 <template>

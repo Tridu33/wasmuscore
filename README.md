@@ -1,4 +1,4 @@
-# WasMuscore
+# Wascore
 
 一个使用WEB前端技术，融合 Electron + Vite + Vue3 + Element plus 的跨端桌面程序Music工具DAW集成。
 
@@ -43,8 +43,8 @@ pnpm run build
 ## 拉取代码
 
 ```bash
-git clone https://gitee.com/slamkun/WasMuscore.git
-cd wasmuscore
+git clone https://gitee.com/slamkun/Wascore.git
+cd wascore
 npm i
 npm run dev
 ```

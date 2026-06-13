@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
+import { Loading } from '@element-plus/icons-vue'
 import { MusicXMLVisualizer } from '~/utils/musicxml/MusicXMLToMidi'
 
 interface Props {

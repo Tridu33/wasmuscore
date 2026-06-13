@@ -1,5 +1,14 @@
 <script lang="ts" setup>
-import { repository } from '~/../package.json'
+import {
+  Menu,
+  Document,
+  Microphone,
+  Cpu,
+  Monitor,
+  Headset,
+  Setting,
+  Notebook,
+} from '@element-plus/icons-vue'
 
 import { toggleDark } from '~/composables'
 </script>
@@ -11,47 +20,32 @@ import { toggleDark } from '~/composables'
         <div class="text-xl">
           <img src="../../assets/logo.png" class="logo">
         </div>
-        <span>WasMuscore!</span>
+        <span>Wascore</span>
       </div>
     </el-menu-item>
-    <el-sub-menu index="2">
-      <template #title>
-        Workspace
-      </template>
-      <el-menu-item index="2-1">
-        item one
-      </el-menu-item>
-      <el-menu-item index="2-2">
-        item two
-      </el-menu-item>
-      <el-menu-item index="2-3">
-        item three
-      </el-menu-item>
-      <el-sub-menu index="2-4">
-        <template #title>
-          item four
-        </template>
-        <el-menu-item index="2-4-1">
-          item one
-        </el-menu-item>
-        <el-menu-item index="2-4-2">
-          item two
-        </el-menu-item>
-        <el-menu-item index="2-4-3">
-          item three
-        </el-menu-item>
-      </el-sub-menu>
-    </el-sub-menu>
-    <el-menu-item index="3" disabled>
+
+    <el-menu-item index="/info">
       Info
     </el-menu-item>
-    <el-menu-item index="4">
-      Orders
-    </el-menu-item>
+
+    <el-sub-menu index="more">
+      <template #title>
+        More
+      </template>
+      <el-menu-item index="/wasm-test">
+        ⚙️ WASM 引擎
+      </el-menu-item>
+      <el-menu-item index="/webgpu-test">
+        🖥️ WebGPU
+      </el-menu-item>
+      <el-menu-item index="/audio-test">
+        🔊 音频测试
+      </el-menu-item>
+    </el-sub-menu>
 
     <el-menu-item h="full" @click="toggleDark()">
       <button
-        class="w-full cursor-pointer border-none bg-transparent"
+        class="w-full cursor-pointer border-none bg-transparent flex items-center justify-center"
         style="height: var(--ep-menu-item-height)"
       >
         <i inline-flex i="dark:ep-moon ep-sunny" />
@@ -59,8 +53,10 @@ import { toggleDark } from '~/composables'
     </el-menu-item>
 
     <el-menu-item h="full">
-      <a class="size-full flex items-center justify-center" :href="repository.url" target="_blank">
-        <div i-ri-github-fill />
+      <a class="size-full flex items-center justify-center" href="https://gitee.com/slamkuntech/wascore" target="_blank">
+        <svg class="w-5 h-5" viewBox="0 0 1024 1024" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M512 1024q-104 0-199-40-92-39-163-110T40 711Q0 616 0 512t40-199Q79 221 150 150T313 40q95-40 199-40t199 40q92 39 163 110t110 163q40 95 40 199t-40 199q-39 92-110 163T711 984q-95 40-199 40z m259-569H480q-10 0-17.5 7.5T455 480v64q0 10 7.5 17.5T480 569h177q11 0 18.5 7.5T683 594v13q0 31-22.5 53.5T607 683H367q-11 0-18.5-7.5T341 657V417q0-31 22.5-53.5T417 341h354q11 0 18-7t7-18v-63q0-11-7-18t-18-7H417q-38 0-72.5 14T283 283q-27 27-41 61.5T228 417v354q0 11 7 18t18 7h373q46 0 85.5-22.5t62-62Q796 672 796 626V480q0-10-7-17.5t-18-7.5z"/>
+        </svg>
       </a>
     </el-menu-item>
   </el-menu>
@@ -68,9 +64,6 @@ import { toggleDark } from '~/composables'
 
 <style lang="scss">
 .el-menu-top {
-  // &.ep-menu--horizontal > .ep-menu-item:nth-child(1) {
-  //   margin-right: auto;
-  // }
   height: 42px;
 
   .logo {

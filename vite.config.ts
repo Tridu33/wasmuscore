@@ -18,9 +18,17 @@ export default defineConfig({
     emptyOutDir: true, // 清空输出目录
   },
   server: {
-    port: 3000,
+    port: 10001,
     open: false, // 不自动打开浏览器
-    host: true, // 允许局域网访问
+    host: '0.0.0.0', // 允许所有网络接口访问
+    allowedHosts: ['wascore.slamkun.top'],
+    proxy: {
+      '/api': {
+        target: 'http://localhost:13030',
+        changeOrigin: true,
+        ws: true,
+      },
+    },
   },
   define: {
     'process.env': {
@@ -43,9 +51,9 @@ export default defineConfig({
 
   plugins: [
     Vue(),
-    electron({
-      entry: 'electron.main.js',
-    }),
+    // electron({
+    //   entry: 'electron.main.js',
+    // }), // Temporarily disabled for web-only mode
 
     // https://github.com/posva/unplugin-vue-router
     VueRouter({
@@ -81,5 +89,17 @@ export default defineConfig({
   ssr: {
     // TODO: workaround until they support native ESM
     noExternal: ['element-plus'],
+  },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['test/setup.ts'],
+    include: ['test/**/*.test.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      include: ['src/utils/**/*.ts', 'src/stores/**/*.ts'],
+      exclude: ['src/utils/wascore/**'],
+    },
   },
 })

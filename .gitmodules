@@ -7,3 +7,9 @@
 [submodule "src/submodules/composing-studio"]
 	path = src/submodules/composing-studio
 	url = https://github.com/ekzhang/composing.studio.git
+[submodule "src/submodules/alphaTab"]
+	path = src/submodules/alphaTab
+	url = https://github.com/CoderLine/alphaTab.git
+[submodule "src/submodules/Neothesia"]
+	path = src/submodules/Neothesia
+	url = https://github.com/PolyMeilex/Neothesia.git

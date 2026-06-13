@@ -17,7 +17,7 @@ function createWindow() {
       symbolColor: 'white',
     },
     // 窗口图标
-    icon: join(__dirname, 'resource/wasmuscore.ico'),
+    icon: join(__dirname, 'resource/wascore.ico'),
     width: 1024,
     height: 768,
     webPreferences: {

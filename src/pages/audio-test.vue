@@ -103,7 +103,7 @@ async function handleInitAudio() {
 
     <!-- 导航按钮 -->
     <div class="actions">
-      <el-button type="success" size="large" @click="$router.push('/nav/midiPlayer')">
+      <el-button type="success" size="large" @click="$router.push('/midiPlayer')">
         前往 MIDI Player →
       </el-button>
       <el-button size="large" @click="$router.push('/')">

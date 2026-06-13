@@ -1,12 +1,12 @@
 {
-  "name": "WasMuscore",
+  "name": "Wascore",
   "type": "module",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.8.1",
   "description": "一个融合electron + Vue3 + wasm的跨端桌面程序Music工具DAW集成",
   "author": {
-    "name": "WasMuscore",
+    "name": "Wascore",
     "email": "tridu33@qq.com",
     "url": "",
     "com": ""
@@ -14,7 +14,7 @@
   "license": "MIT",
   "homepage": "",
   "repository": {
-    "url": "https://github.com/slamkun/WasMuscore"
+    "url": "https://github.com/slamkun/Wascore"
   },
   "main": "electron.main.js",
   "scripts注释": [
@@ -35,9 +35,13 @@
     "clean": "rm -rf ./dist_web && rm -rf ./dist && rm -rf ./rust_generated && rm -rf ./wasm/pkg/",
     "build:wasm": "npm run clean && bash build.sh",
     "build": "npm run build:wasm && vue-tsc --noEmit && vite build && electron-builder",
-    "start": "cross-env NODE_ENV=\"development\" && concurrently \"vite\" \"wait-on tcp:3000 && electron .\"",
-    "watch:wasm": "cd wasm && cargo watch -i .gitignore -i \"pkg/*\" -s \"wasm-pack build --target web --dev\"",
-    "dev": "npm run watch:wasm & vite"
+    "start": "concurrently --kill-others-on-fail \"cross-env COMPOSING_STUDIO_PORT=13030 cargo run --manifest-path src/submodules/composing-studio/cstudio-server/Cargo.toml\" \"vite\" \"wait-on tcp:3000 && electron .\"",
+    "serve": "vite --port 10001 --host 0.0.0.0",
+    "watch:wasm": "cd wasm_rust && cargo watch -i .gitignore -i \"pkg/*\" -s \"wasm-bindgen target/wasm32-unknown-unknown/debug/wasmusicorelectron.wasm --out-dir ./pkg/ --target web\"",
+    "dev": "npm run watch:wasm & vite",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "config": {
     "electron": {
@@ -46,13 +50,13 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
+    "@logue/sf2synth": "^0.9.0",
     "@stringsync/musicxml": "^0.3.0",
     "@vueuse/core": "^12.0.0",
     "@webgpu/types": "^0.1.70",
     "element-plus": "^2.9.5",
     "opensheetmusicdisplay": "^1.9.9",
     "pinia": "^3.0.4",
-    "sf2-player": "^0.0.7",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },
@@ -63,6 +67,7 @@
     "@types/node": "^20.17.10",
     "@unocss/eslint-plugin": "^0.65.1",
     "@vitejs/plugin-vue": "^5.2.1",
+    "@vitest/coverage-v8": "^4.1.8",
     "autoprefixer": "^10.4.2",
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
@@ -70,7 +75,9 @@
     "electron-builder": "^25.1.8",
     "eslint": "^9.16.0",
     "eslint-plugin-format": "^0.1.3",
+    "jsdom": "^29.1.1",
     "lodash": "^4.17.21",
+    "node-web-audio-api": "^2.0.0",
     "postcss": "^8.4.7",
     "sass": "^1.82.0",
     "tailwindcss": "^3.0.23",
@@ -84,6 +91,12 @@
     "vite-plugin-wasm": "^3.4.1",
     "vite-plugin-wasm-pack": "^0.1.9",
     "vite-ssg": "^0.24.2",
-    "vue-tsc": "^2.1.10"
+    "vitest": "^4.1.8",
+    "vitest-webgl-canvas-mock": "^1.1.0",
+    "vue-tsc": "^2.1.10",
+    "wait-on": "^9.0.10",
+    "web-audio-api": "^1.5.1",
+    "web-audio-engine": "^0.13.4",
+    "webaudio-node": "^0.8.0"
   }
 }
