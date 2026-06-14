@@ -3,6 +3,29 @@
     --theme-middle: #25262d;
     --theme-dark: #1e1f24;
     --theme-text: #8e95a6;
+    --theme-bg: #1e1f24;
+    --theme-bg-hover: #2e3039;
+    --theme-switch-bg: rgb(50, 53, 62);
+    --theme-switch-selected: rgb(60, 87, 221);
+    --theme-border: #1e1f24;
+    --theme-scrollbar-track: rgb(37, 38, 45);
+    --theme-scrollbar-thumb: rgb(69, 72, 81);
+    --theme-overlay: #1e1f24bb;
+}
+
+:root.light {
+    --theme-light: #e8e8e8;
+    --theme-middle: #f0f0f0;
+    --theme-dark: #ffffff;
+    --theme-text: #555555;
+    --theme-bg: #ffffff;
+    --theme-bg-hover: #e8e8e8;
+    --theme-switch-bg: #d0d0d0;
+    --theme-switch-selected: rgb(60, 87, 221);
+    --theme-border: #cccccc;
+    --theme-scrollbar-track: #f0f0f0;
+    --theme-scrollbar-thumb: #b0b0b0;
+    --theme-overlay: #ffffffbb;
 }
 
 * {
@@ -94,7 +117,7 @@ button {
     z-index: 98;
     width: 100%;
     height: 100%;
-    background-color: #1e1f24bb;
+    background-color: var(--theme-overlay);
     border: var(--theme-text) 3px dashed;
     box-sizing: border-box;
     font-size: 2em;
@@ -117,7 +140,7 @@ button {
     border: none;
     position: relative;
     height: 1em;
-    background-color: rgb(37, 38, 45);
+    background-color: var(--theme-scrollbar-track);
 }
 
 #scrollbar-thumb {
@@ -127,7 +150,7 @@ button {
     position: absolute;
     height: 100%;
     width: 50px;
-    background-color: rgb(69, 72, 81);
+    background-color: var(--theme-scrollbar-thumb);
     cursor: ew-resize;
 }
 
@@ -193,10 +216,10 @@ button {
 }
 
 .switch-bar button {
-    color: white;
+    color: var(--theme-text);
     padding: 0.5em 0.6em;
     border-radius: 0;
-    background: rgb(50, 53, 62);
+    background: var(--theme-switch-bg);
     position: relative;
     z-index: 0;
     /* 恢复默认大小 */
@@ -214,7 +237,7 @@ button {
 }
 
 .switch-bar .selected {
-    background-color: rgb(60, 87, 221);
+    background-color: var(--theme-switch-selected);
 }
 /* 下方标签 */
 .labeled {
@@ -247,8 +270,8 @@ button {
     border-radius: 4px;
 }
 .btn-ul li:hover {
-    background-color: var(--theme-light) !important;
-    color: white !important;
+    background-color: var(--theme-bg-hover) !important;
+    color: var(--theme-text) !important;
 }
 .btn-ul button {
     padding: 0.25em 0.6em;
@@ -300,12 +323,12 @@ textarea {
     width: 12px;
 }
 .niceScroll::-webkit-scrollbar-thumb {
-    background-color: rgb(50, 53, 62);
-    border: 3px solid rgb(37, 38, 45);
+    background-color: var(--theme-scrollbar-thumb);
+    border: 3px solid var(--theme-scrollbar-track);
     border-radius: 6px;
 }
 .niceScroll::-webkit-scrollbar-track, ::-webkit-scrollbar-corner {
-    background-color: rgb(37, 38, 45);
+    background-color: var(--theme-scrollbar-track);
 }
 
 /* 分析面板 */

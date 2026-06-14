@@ -1,15 +1,4 @@
 <script lang="ts" setup>
-import {
-  Menu,
-  Document,
-  Microphone,
-  Cpu,
-  Monitor,
-  Headset,
-  Setting,
-  Notebook,
-} from '@element-plus/icons-vue'
-
 import { toggleDark } from '~/composables'
 </script>
 
@@ -22,10 +11,6 @@ import { toggleDark } from '~/composables'
         </div>
         <span>Wascore</span>
       </div>
-    </el-menu-item>
-
-    <el-menu-item index="/info">
-      Info
     </el-menu-item>
 
     <el-sub-menu index="more">
@@ -53,9 +38,9 @@ import { toggleDark } from '~/composables'
     </el-menu-item>
 
     <el-menu-item h="full">
-      <a class="size-full flex items-center justify-center" href="https://gitee.com/slamkuntech/wascore" target="_blank">
-        <svg class="w-5 h-5" viewBox="0 0 1024 1024" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M512 1024q-104 0-199-40-92-39-163-110T40 711Q0 616 0 512t40-199Q79 221 150 150T313 40q95-40 199-40t199 40q92 39 163 110t110 163q40 95 40 199t-40 199q-39 92-110 163T711 984q-95 40-199 40z m259-569H480q-10 0-17.5 7.5T455 480v64q0 10 7.5 17.5T480 569h177q11 0 18.5 7.5T683 594v13q0 31-22.5 53.5T607 683H367q-11 0-18.5-7.5T341 657V417q0-31 22.5-53.5T417 341h354q11 0 18-7t7-18v-63q0-11-7-18t-18-7H417q-38 0-72.5 14T283 283q-27 27-41 61.5T228 417v354q0 11 7 18t18 7h373q46 0 85.5-22.5t62-62Q796 672 796 626V480q0-10-7-17.5t-18-7.5z"/>
+      <a class="size-full flex items-center justify-center" href="https://github.com/Tridu33/wasmuscore" target="_blank">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.337-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
         </svg>
       </a>
     </el-menu-item>

@@ -21,7 +21,12 @@ export default defineConfig({
     port: 10001,
     open: false, // 不自动打开浏览器
     host: '0.0.0.0', // 允许所有网络接口访问
-    allowedHosts: ['wascore.slamkun.top'],
+    allowedHosts: ['wascore.slamkun.top', '.slamkun.top'],
+    hmr: {
+      host: 'wascore.slamkun.top',
+      protocol: 'wss',
+      clientPort: 443,
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:13030',

@@ -5,7 +5,6 @@ import {
   Document,
   Microphone,
   Cpu,
-  Monitor,
   Headset,
   Notebook,
   Edit,
@@ -71,18 +70,19 @@ function handleClose(key: string, keyPath: string[]) {
 
       <el-menu-item index="/note-digger">
         <el-icon><Cpu /></el-icon>
-        <template #title>noteDigger</template>
+        <template #title>频谱分析扒谱</template>
       </el-menu-item>
 
-      <el-menu-item index="/smoosic">
-        <el-icon><Monitor /></el-icon>
-        <template #title>Smoosic</template>
+      <el-menu-item index="/alpha-tab">
+        <el-icon><Headset /></el-icon>
+        <template #title>六线谱 (alphaTab)</template>
       </el-menu-item>
 
       <el-menu-item index="/abc-notes">
         <el-icon><Edit /></el-icon>
-        <template #title>AbcNotes</template>
+        <template #title>ABC 记谱</template>
       </el-menu-item>
+
     </el-menu>
   </div>
 </template>

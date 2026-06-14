@@ -1,16 +1,34 @@
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { isDark } from '~/composables'
 
 const loading = ref(true)
 const iframeRef = ref<HTMLIFrameElement | null>(null)
+
+function sendTheme() {
+  if (iframeRef.value?.contentWindow) {
+    iframeRef.value.contentWindow.postMessage(
+      { type: 'theme', dark: isDark.value },
+      '*',
+    )
+  }
+}
+
+const stopWatch = watch(isDark, sendTheme)
 
 onMounted(() => {
   // noteDigger scripts load inside the iframe; hide loading once ready
   if (iframeRef.value) {
     iframeRef.value.onload = () => {
       loading.value = false
+      // Send current theme once iframe is loaded
+      sendTheme()
     }
   }
+})
+
+onBeforeUnmount(() => {
+  stopWatch()
 })
 </script>
 
@@ -19,7 +37,7 @@ onMounted(() => {
     <div v-if="loading" class="loading-overlay">
       <div class="loading-content">
         <div class="spinner" />
-        <p>正在加载 noteDigger...</p>
+        <p>正在加载 频谱分析扒谱...</p>
       </div>
     </div>
     <iframe
@@ -37,6 +55,7 @@ onMounted(() => {
   height: calc(100vh - 60px);
   position: relative;
   overflow: hidden;
+  background: var(--ep-bg-container, #1a1a2e);
 }
 
 .note-digger-iframe {

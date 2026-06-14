@@ -51,6 +51,22 @@ import 'element-plus/theme-chalk/src/message-box.scss'
 // app.mount("#app");
 
 // https://github.com/antfu/vite-ssg
+// Temporarily use pure client-side SPA to avoid hydration errors in dev
+import { createApp } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes,
+})
+
+const app = createApp(App)
+app.use(createPinia())
+app.use(router)
+app.mount('#app')
+
+/*
+// SSG version (uncomment for production build):
 export const createApp = ViteSSG(
   App,
   {
@@ -68,3 +84,4 @@ export const createApp = ViteSSG(
     // ctx.app.use(Previewer)
   },
 )
+*/

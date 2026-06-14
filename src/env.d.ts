@@ -6,3 +6,9 @@ declare module '*.vue' {
   const component: DefineComponent<object, object, any>
   export default component
 }
+
+interface Window {
+  MonacoEnvironment?: {
+    getWorkerUrl: (moduleId: string, label: string) => string
+  }
+}

@@ -20,9 +20,9 @@ declare module 'vue-router/auto-routes' {
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     '/abc-notes': RouteRecordInfo<'/abc-notes', '/abc-notes', Record<never, never>, Record<never, never>>,
+    '/alpha-tab': RouteRecordInfo<'/alpha-tab', '/alpha-tab', Record<never, never>, Record<never, never>>,
     '/audio-test': RouteRecordInfo<'/audio-test', '/audio-test', Record<never, never>, Record<never, never>>,
     '/editor-tab-test': RouteRecordInfo<'/editor-tab-test', '/editor-tab-test', Record<never, never>, Record<never, never>>,
-    '/info': RouteRecordInfo<'/info', '/info', Record<never, never>, Record<never, never>>,
     '/midiPlayer': RouteRecordInfo<'/midiPlayer', '/midiPlayer', Record<never, never>, Record<never, never>>,
     '/musicxml-parse': RouteRecordInfo<'/musicxml-parse', '/musicxml-parse', Record<never, never>, Record<never, never>>,
     '/nav/1/item-1': RouteRecordInfo<'/nav/1/item-1', '/nav/1/item-1', Record<never, never>, Record<never, never>>,
@@ -30,7 +30,6 @@ declare module 'vue-router/auto-routes' {
     '/notation-test': RouteRecordInfo<'/notation-test', '/notation-test', Record<never, never>, Record<never, never>>,
     '/note-digger': RouteRecordInfo<'/note-digger', '/note-digger', Record<never, never>, Record<never, never>>,
     '/recording-test': RouteRecordInfo<'/recording-test', '/recording-test', Record<never, never>, Record<never, never>>,
-    '/smoosic': RouteRecordInfo<'/smoosic', '/smoosic', Record<never, never>, Record<never, never>>,
     '/wasm-test': RouteRecordInfo<'/wasm-test', '/wasm-test', Record<never, never>, Record<never, never>>,
     '/webgpu-test': RouteRecordInfo<'/webgpu-test', '/webgpu-test', Record<never, never>, Record<never, never>>,
   }
