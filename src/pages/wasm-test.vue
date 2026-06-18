@@ -45,8 +45,8 @@ onMounted(async () => {
       <el-button type="primary" @click="$router.push('/')">
         Home
       </el-button>
-      <el-button type="success" @click="$router.push('/midiPlayer')">
-        MIDI Player
+      <el-button type="success" @click="$router.push('/midi-piano')">
+        MIDI 瀑布流
       </el-button>
     </div>
   </div>

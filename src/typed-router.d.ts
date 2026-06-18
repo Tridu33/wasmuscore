@@ -20,10 +20,11 @@ declare module 'vue-router/auto-routes' {
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     '/abc-notes': RouteRecordInfo<'/abc-notes', '/abc-notes', Record<never, never>, Record<never, never>>,
-    '/alpha-tab': RouteRecordInfo<'/alpha-tab', '/alpha-tab', Record<never, never>, Record<never, never>>,
     '/audio-test': RouteRecordInfo<'/audio-test', '/audio-test', Record<never, never>, Record<never, never>>,
     '/editor-tab-test': RouteRecordInfo<'/editor-tab-test', '/editor-tab-test', Record<never, never>, Record<never, never>>,
-    '/midiPlayer': RouteRecordInfo<'/midiPlayer', '/midiPlayer', Record<never, never>, Record<never, never>>,
+    '/guitar-pro': RouteRecordInfo<'/guitar-pro', '/guitar-pro', Record<never, never>, Record<never, never>>,
+    '/midi-piano': RouteRecordInfo<'/midi-piano', '/midi-piano', Record<never, never>, Record<never, never>>,
+    '/midi-player': RouteRecordInfo<'/midi-player', '/midi-player', Record<never, never>, Record<never, never>>,
     '/musicxml-parse': RouteRecordInfo<'/musicxml-parse', '/musicxml-parse', Record<never, never>, Record<never, never>>,
     '/nav/1/item-1': RouteRecordInfo<'/nav/1/item-1', '/nav/1/item-1', Record<never, never>, Record<never, never>>,
     '/nav/2': RouteRecordInfo<'/nav/2', '/nav/2', Record<never, never>, Record<never, never>>,

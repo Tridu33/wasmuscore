@@ -46,7 +46,6 @@ declare module 'vue' {
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     Logos: typeof import('./components/Logos.vue')['default']
     MessageBoxDemo: typeof import('./components/MessageBoxDemo.vue')['default']
-    MidiPlayer: typeof import('./components/MidiPlayer.vue')['default']
     MidiRecorder: typeof import('./components/MidiRecorder.vue')['default']
     NumberedNotation: typeof import('./components/NumberedNotation.vue')['default']
     PianoRoll: typeof import('./components/PianoRoll.vue')['default']

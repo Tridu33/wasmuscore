@@ -1,10 +1,13 @@
 // electron 主程序
 import path, { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { spawn } from 'node:child_process'
 import { app, BrowserWindow } from 'electron'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
+let backendProcess = null
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'false'
 // 屏蔽安全警告
@@ -39,7 +42,18 @@ function createWindow() {
     win.loadFile(join(__dirname, 'dist_web/index.html'))
   }
 }
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  // 生产模式: 启动 Express 后端服务
+  if (!process.env.VITE_DEV_SERVER_URL) {
+    const backendPath = join(__dirname, 'backend', 'src', 'app.ts')
+    backendProcess = spawn('npx', ['tsx', backendPath], {
+      stdio: 'inherit',
+      env: { ...process.env, NODE_ENV: 'production' },
+      cwd: __dirname,
+    })
+    backendProcess.on('error', (err) => console.error('Backend failed:', err))
+    backendProcess.on('exit', (code) => console.log(`Backend exited with code ${code}`))
+  }
   createWindow()
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0)
@@ -49,4 +63,7 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin')
     app.quit()
+})
+app.on('will-quit', () => {
+  backendProcess?.kill()
 })

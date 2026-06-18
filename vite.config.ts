@@ -22,11 +22,7 @@ export default defineConfig({
     open: false, // 不自动打开浏览器
     host: '0.0.0.0', // 允许所有网络接口访问
     allowedHosts: ['wascore.slamkun.top', '.slamkun.top'],
-    hmr: {
-      host: 'wascore.slamkun.top',
-      protocol: 'wss',
-      clientPort: 443,
-    },
+    hmr: true,
     proxy: {
       '/api': {
         target: 'http://localhost:13030',
@@ -89,6 +85,10 @@ export default defineConfig({
   optimizeDeps: {
     exclude: [
       '@syntect/wasm',
+      '@coderline/alphatab',
+    ],
+    include: [
+      'guitarpro-parser',
     ],
   },
   ssr: {

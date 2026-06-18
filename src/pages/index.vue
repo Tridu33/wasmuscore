@@ -26,6 +26,12 @@ const showFullInfo = ref(false)
         <p>多音轨播放、钢琴卷帘动画、WebGPU 加速渲染</p>
       </div>
       <div class="feature-card">
+        <router-link to="/midi-piano" class="card-link">
+          <h3>🎹 MIDI 瀑布流</h3>
+          <p>Synthesia 风格下落动画, 支持 MIDI 键盘实时演奏</p>
+        </router-link>
+      </div>
+      <div class="feature-card">
         <h3>🎼 MusicXML 解析</h3>
         <p>上传 MusicXML 文件，专业乐谱渲染展示</p>
       </div>
@@ -145,6 +151,16 @@ pnpm run dev          # 启动开发模式</code></pre>
   font-size: 13px;
   color: var(--ep-text-color-secondary);
   margin: 0;
+}
+
+.feature-card .card-link {
+  text-decoration: none;
+  display: block;
+}
+
+.feature-card .card-link h3,
+.feature-card .card-link p {
+  color: inherit;
 }
 
 .full-info {

@@ -48,7 +48,12 @@ function handleClose(key: string, keyPath: string[]) {
         <template #title>首页</template>
       </el-menu-item>
 
-      <el-menu-item index="/midiPlayer">
+      <el-menu-item index="/midi-piano">
+        <el-icon><Headset /></el-icon>
+        <template #title>MIDI 瀑布流</template>
+      </el-menu-item>
+
+      <el-menu-item index="/midi-player">
         <el-icon><Headset /></el-icon>
         <template #title>MIDI 播放器</template>
       </el-menu-item>
@@ -73,9 +78,9 @@ function handleClose(key: string, keyPath: string[]) {
         <template #title>频谱分析扒谱</template>
       </el-menu-item>
 
-      <el-menu-item index="/alpha-tab">
+      <el-menu-item index="/guitar-pro">
         <el-icon><Headset /></el-icon>
-        <template #title>六线谱 (alphaTab)</template>
+        <template #title>六线谱 (Guitar Pro)</template>
       </el-menu-item>
 
       <el-menu-item index="/abc-notes">

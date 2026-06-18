@@ -96,15 +96,15 @@ async function handleInitAudio() {
 
       <el-steps direction="vertical" :active="midiStore.audioLoaded ? 2 : 1">
         <el-step title="初始化音频引擎" description="点击按钮加载 SoundFont2 文件 (~16MB)" />
-        <el-step title="上传 MIDI 文件" description="前往 MIDI Player 页面上传并播放 MIDI" />
+        <el-step title="前往 MIDI 瀑布流" description="前往 MIDI 瀑布流页面上传并播放 MIDI" />
         <el-step title="测试音频播放" description="播放 MIDI 时应该能听到真实乐器声音" />
       </el-steps>
     </el-card>
 
     <!-- 导航按钮 -->
     <div class="actions">
-      <el-button type="success" size="large" @click="$router.push('/midiPlayer')">
-        前往 MIDI Player →
+      <el-button type="success" size="large" @click="$router.push('/midi-piano')">
+        前往 MIDI 瀑布流 →
       </el-button>
       <el-button size="large" @click="$router.push('/')">
         返回首页
